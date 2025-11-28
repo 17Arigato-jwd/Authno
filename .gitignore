@@ -1,23 +1,62 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# =========================================
+# 🔹 DEPENDENCIES
+# =========================================
+node_modules/
+.pnp/
 .pnp.js
 
-# testing
-/coverage
+# =========================================
+# 🔹 TESTING
+# =========================================
+coverage/
 
-# production
-/build
+# =========================================
+# 🔹 REACT BUILD OUTPUT (NEVER COMMIT)
+# =========================================
+build/
 
-# misc
-.DS_Store
+# =========================================
+# 🔹 ELECTRON BUILD OUTPUT (NEVER COMMIT)
+# =========================================
+dist/
+out/
+*.exe
+*.AppImage
+*.deb
+*.rpm
+*.dmg
+
+# =========================================
+# 🔹 LOGS & TEMP FILES
+# =========================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# =========================================
+# 🔹 ENVIRONMENT FILES
+# =========================================
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# =========================================
+# 🔹 OS / EDITOR FILES
+# =========================================
+.DS_Store
+Thumbs.db
+
+# =========================================
+# 🔹 VSCODE & IDE SETTINGS
+# =========================================
+.vscode/
+.idea/
+
+# =========================================
+# 🔹 ELECTRON CACHE (LARGE FILES)
+# =========================================
+electron-builder-cache/
+.cache/

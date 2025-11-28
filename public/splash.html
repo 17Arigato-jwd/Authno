@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AuthNo — Loading...</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #012d73, #000);
+        color: white;
+        font-family: "Poppins", sans-serif;
+        overflow: hidden;
+      }
+      .fade-in {
+        animation: fadein 1.2s ease-in-out forwards;
+      }
+      @keyframes fadein {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .logo {
+        width: 120px;
+        height: 120px;
+        border-radius: 20%;
+        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+      }
+      h1 {
+        font-size: 1.8rem;
+        margin-top: 16px;
+        opacity: 0.9;
+      }
+      p {
+        font-size: 0.9rem;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fade-in" style="text-align: center;">
+      <img src="authno.png" alt="AuthNo Logo" class="logo" />
+      <h1>AuthNo</h1>
+      <p>Loading your workspace...</p>
+    </div>
+  </body>
+</html>
