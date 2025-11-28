@@ -1,19 +1,17 @@
 name: Build & Release
 
 on:
-  release:
-    types: [published]
   push:
     tags:
       - "v*"
 
 jobs:
   release:
-    name: Build for Win/Linux/macOS
+    name: Build for Win/Linux
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest]
 
     steps:
       - name: Checkout

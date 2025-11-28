@@ -27,7 +27,7 @@
     "electron": "cross-env NODE_ENV=development electron .",
     "electron-build": "cross-env NODE_ENV=production electron .",
     "dist": "electron-builder --win",
-    "dist:all": "electron-builder --win --linux --mac"
+    "dist:all": "electron-builder --win --linux"
   },
   "eslintConfig": {
     "extends": [
@@ -107,9 +107,5 @@
       "category": "Utility",
       "icon": "public"
     },
-    "mac": {
-      "target": ["dmg"],
-      "icon": "public"
-    }
   }
 }
