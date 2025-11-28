@@ -26,7 +26,8 @@
     "eject": "react-scripts eject",
     "electron": "cross-env NODE_ENV=development electron .",
     "electron-build": "cross-env NODE_ENV=production electron .",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder --win",
+    "dist:all": "electron-builder --win --linux --mac"
   },
   "eslintConfig": {
     "extends": [
@@ -86,10 +87,7 @@
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+          "arch": ["x64", "ia32"]
         }
       ],
       "legalTrademarks": "VCHS Studios"
@@ -102,6 +100,16 @@
       "license": "LICENSE.txt",
       "displayLanguageSelector": false,
       "shortcutName": "AuthNo"
+    },
+
+    "linux": {
+      "target": ["AppImage", "deb", "rpm"],
+      "category": "Utility",
+      "icon": "public"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "public"
     }
   }
 }
