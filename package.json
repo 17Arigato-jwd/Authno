@@ -27,6 +27,8 @@
     "electron": "cross-env NODE_ENV=development electron .",
     "electron-build": "cross-env NODE_ENV=production electron .",
     "dist": "electron-builder --win",
+    "dist:win": "electron-builder --win",
+    "dist:linux": "electron-builder --linux",
     "dist:all": "electron-builder --win --linux"
   },
   "eslintConfig": {
