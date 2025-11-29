@@ -1,70 +1,124 @@
-# Getting Started with Create React App
+# 🖋️ **Authno**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+*A fast, offline-first writing app for authors who want to focus entirely on their stories.*
 
-## Available Scripts
+<p align="center">
+  <img src="./public/authno.png" width="120" alt="Authno Logo"/>
+</p>
 
-In the project directory, you can run:
+<p align="center">
+  <b>Write without distractions. Everything saved locally. Cross-platform. Secure. Yours.</b>
+</p>
 
-### `npm start`
+<p align="center">
+  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/17Arigato-jwd/Authno?label=Latest%20Release&style=for-the-badge">
+  <img alt="GitHub License" src="https://img.shields.io/github/license/17Arigato-jwd/Authno?style=for-the-badge">
+  <img alt="Platforms" src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-blue?style=for-the-badge">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Public%20Beta-yellow?style=for-the-badge">
+</p>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## ✨ **What is Authno?**
 
-### `npm test`
+Authno is a **local-first writing tool** built specifically for **authors**, designed to let you write books, stories, drafts, and long-form text without distractions, lag, or reliance on the internet.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Every file stays on your device — no accounts, no cloud sync, no online requirements.
 
-### `npm run build`
+Authno uses a custom file format (`.authbook`) to save writing projects securely and quickly.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🚀 **Current Features**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### ✔ **Offline Support**
 
-### `npm run eject`
+* Fully local.
+* Uses `.authbook` project files stored on your machine.
+* Files open the app when double-clicked (small limitation: content does not auto-load yet — you must open it from inside the app).
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### ✔ **Cross-Platform**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* Windows
+* Linux (AppImage, DEB, RPM)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### ✔ **Basic Author Tools**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+* Core writing experience
+* Basic text formatting
+* Simple, clean interface
+* Shortcut support (e.g., **Ctrl + S** to save)
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🛠 **Download Authno**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### **Windows**
 
-### Code Splitting
+➡ **Installer (Recommended)**
+You’ll find it directly under the latest release as:
+`AuthNo-Setup-<version>.exe`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### **Linux**
 
-### Analyzing the Bundle Size
+| Format                  | File                          |
+| ----------------------- | ----------------------------- |
+| **AppImage**            | `Authno-<version>.AppImage`   |
+| **DEB (Ubuntu/Debian)** | `Authno_<version>_amd64.deb`  |
+| **RPM (Fedora/RedHat)** | `Authno-<version>.x86_64.rpm` |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Go to the Releases page and download whichever matches your system.
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🧭 **Roadmap**
 
-### Advanced Configuration
+Planned for upcoming versions:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### **🔧 Core Improvements**
 
-### Deployment
+* [ ] Auto-load `.authbook` files when opened
+* [ ] Add Settings menu
+* [ ] Implement Storyboards properly
+* [ ] Homescreen / dashboard view
+* [ ] UI/UX cleanup & consistency
+* [ ] Layout editing tools
+* [ ] Editor feature expansion (formatting tools, search, more)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### **💡 Future Experiments**
 
-### `npm run build` fails to minify
+* [ ] Chapter management
+* [ ] Writing statistics
+* [ ] Daily streaks with logic
+* [ ] Dark/light theme controls
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 🐛 Known Limitations (Beta)
+
+* `.authbook` files open the app, but do **not** auto-load their contents
+* Some UI/UX roughness
+* Storyboard button currently behaves like "New Book"
+* Editing layout menu is not implemented yet
+* Streak display has no logic behind it yet
+
+---
+
+## 📂 Project Structure
+
+```
+/public             → app icons & logos  
+/src                → React frontend  
+/main.js            → Electron main process  
+/preload.js         → Preload scripts  
+/fileManager.js     → Local file system logic  
+/dist               → Build output (ignored in repo)  
+```
+
+---
+
+## ❤️ Acknowledgments
+
+Authno is built slowly but passionately, with the goal of giving authors a **beautiful**, **offline**, distraction-free place to write.
+
+Just tell me!
