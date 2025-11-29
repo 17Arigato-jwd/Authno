@@ -51,6 +51,19 @@ Authno uses a custom file format (`.authbook`) to save writing projects securely
 
 ---
 
+## Screenshots
+
+<p align="center">
+  <a href="./public/screenshots/authno-file.png"><img src="./public/screenshots/authno-file.png" alt="Authno file manager opening .authbook" width="300" style="margin:6px"/></a>
+  <a href="./public/screenshots/authno-hs.png"><img src="./public/screenshots/authno-hs.png" alt="Authno homescreen" width="300" style="margin:6px"/></a>
+  <a href="./public/screenshots/authno-ss.png"><img src="./public/screenshots/authno-ss.png" alt="Authno example book with formatting" width="300" style="margin:6px"/></a>
+</p>
+
+**Figure 1.** Left — File manager opening a `.authbook` file. Center — Homescreen / dashboard (planned). Right — Example story showing formatting options.
+
+> Tip: click any image to open the full-size screenshot in a new tab.
+
+---
 ## 🛠 **Download Authno**
 
 ### **Windows**
