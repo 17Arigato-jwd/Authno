@@ -39,33 +39,38 @@ export default function EditorToolbar({ execCommand }) {
   // === Toggle Highlight ===
   const toggleHighlight = () => {
     const selection = window.getSelection();
-    const current = document.queryCommandValue("backColor");
-    const isHighlighted =
-      current &&
-      (current.toLowerCase() === "yellow" ||
-        current === "rgba(255, 255, 0, 0.3)");
+    if (!selection || selection.rangeCount === 0) return;
 
-    // Toggle highlight visually and behaviorally
-    if (isHighlighted || activeButtons.highlight) {
-      execCommand("backColor", "transparent");
-      // Force caret to exit highlight mode immediately
-      if (selection && selection.rangeCount > 0) {
-        const range = selection.getRangeAt(0);
-        const span = document.createElement("span");
-        span.style.backgroundColor = "transparent";
-        range.insertNode(span);
-        range.setStartAfter(span);
-        range.collapse(true);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      setActiveButtons((prev) => ({ ...prev, highlight: false }));
-    } else {
-      execCommand("backColor", "rgba(255,255,0,0.3)");
-      setActiveButtons((prev) => ({ ...prev, highlight: true }));
+    const range = selection.getRangeAt(0);
+
+    // If selection is collapsed, do nothing
+    if (range.collapsed) return;
+
+    // Detect if selection is already highlighted
+    const parent = range.commonAncestorContainer.parentElement;
+    const isHighlighted =
+      parent &&
+      parent.tagName === "SPAN" &&
+      parent.style.backgroundColor.includes("255, 255, 0");
+
+    // === Remove highlight ===
+    if (isHighlighted) {
+      const span = parent;
+      const text = document.createTextNode(span.textContent);
+      span.replaceWith(text);
+      setActiveButtons((p) => ({ ...p, highlight: false }));
+      return;
     }
 
-    updateActiveStates();
+    // === Apply new custom highlight ===
+    const span = document.createElement("span");
+    span.style.backgroundColor = "rgba(255, 255, 0, 0.3)";
+    span.style.padding = "2px 2px";
+    span.style.borderRadius = "5px";
+
+    range.surroundContents(span);
+
+    setActiveButtons((p) => ({ ...p, highlight: true }));
   };
 
   // === Keyboard Shortcuts ===
