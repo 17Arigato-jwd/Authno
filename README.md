@@ -14,6 +14,11 @@
   <img alt="GitHub Release" src="https://img.shields.io/github/v/release/17Arigato-jwd/Authno?label=Latest%20Release&style=for-the-badge">
   <img alt="GitHub License" src="https://img.shields.io/github/license/17Arigato-jwd/Authno?style=for-the-badge">
   <img alt="Platforms" src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-blue?style=for-the-badge">
+  <a href="LICENSE.txt">
+    <img alt="Custom License" src="https://img.shields.io/badge/license-Custom-blue?style=for-the-badge">
+  </a>
+  <img alt="GitHub Repo Size" src="https://img.shields.io/github/repo-size/17Arigato-jwd/Authno?style=for-the-badge">
+  <img alt="GitHub Issues" src="https://img.shields.io/github/issues/17Arigato-jwd/Authno?style=for-the-badge">
   <img alt="Status" src="https://img.shields.io/badge/Status-Public%20Beta-yellow?style=for-the-badge">
 </p>
 
