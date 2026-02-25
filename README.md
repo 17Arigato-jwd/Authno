@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/17Arigato-jwd/Authno?label=Latest%20Release&style=for-the-badge">
+  <img alt="GitHub Release" src="https://img.shields.io/github/v/release/17Arigato-jwd/Authno?include_prereleases&label=Latest%20Release&style=for-the-badge">
   <a href="LICENSE.txt">
     <img alt="Custom License" src="https://img.shields.io/badge/license-Custom-blue?style=for-the-badge">
   </a>
