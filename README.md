@@ -20,7 +20,6 @@
   <img alt="GitHub Issues" src="https://img.shields.io/github/issues/17Arigato-jwd/Authno?style=for-the-badge">
   <img alt="Status" src="https://img.shields.io/badge/Status-Public%20Beta-yellow?style=for-the-badge">
 </p>
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/17Arigato-jwd/Authno?utm_source=oss&utm_medium=github&utm_campaign=17Arigato-jwd%2FAuthno&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 ---
 
 ## ✨ **What is Authno?**
