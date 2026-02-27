@@ -1,6 +1,6 @@
-# 🖋️ **Authno**
+# **Authno**
 
-*A fast, offline-first writing app for authors who want to focus entirely on their stories.*
+*A fast, offline writing app for authors who want to focus entirely on their stories.*
 
 <p align="center">
   <img src="./public/authno.png" width="120" alt="Authno Logo"/>
@@ -22,7 +22,7 @@
 </p>
 ---
 
-## ✨ **What is Authno?**
+## **What is Authno?**
 
 Authno is a **local-first writing tool** built specifically for **authors**, designed to let you write books, stories, drafts, and long-form text without distractions, lag, or reliance on the internet.
 
@@ -32,20 +32,20 @@ Authno uses a custom file format (`.authbook`) to save writing projects securely
 
 ---
 
-## 🚀 **Current Features**
+## **Current Features**
 
-### ✔ **Offline Support**
+### **Offline Support**
 
 * Fully local.
 * Uses `.authbook` project files stored on your machine.
 * Files open the app when double-clicked (small limitation: content does not auto-load yet — you must open it from inside the app).
 
-### ✔ **Cross-Platform**
+### **Cross-Platform**
 
 * Windows
 * Linux (AppImage, DEB, RPM)
 
-### ✔ **Basic Author Tools**
+### **Basic Author Tools**
 
 * Core writing experience
 * Basic text formatting
@@ -67,7 +67,7 @@ Authno uses a custom file format (`.authbook`) to save writing projects securely
 > Tip: click any image to open the full-size screenshot in a new tab.
 
 ---
-## 🛠 **Download Authno**
+## **Download Authno**
 
 ### **Windows**
 
@@ -87,11 +87,11 @@ Go to the Releases page and download whichever matches your system.
 
 ---
 
-## 🧭 **Roadmap**
+## **Roadmap**
 
 Planned for upcoming versions:
 
-### **🔧 Core Improvements**
+### **Core Improvements**
 
 * [ ] Auto-load `.authbook` files when opened
 * [ ] Add Settings menu
@@ -101,7 +101,7 @@ Planned for upcoming versions:
 * [ ] Layout editing tools
 * [ ] Editor feature expansion (formatting tools, search, more)
 
-### **💡 Future Experiments**
+### **Future Experiments**
 
 * [ ] Chapter management
 * [ ] Writing statistics
@@ -110,9 +110,8 @@ Planned for upcoming versions:
 
 ---
 
-## 🐛 Known Limitations (Beta)
+## Known Limitations (Beta)
 
-* `.authbook` files open the app, but do **not** auto-load their contents
 * Some UI/UX roughness
 * Storyboard button currently behaves like "New Book"
 * Editing layout menu is not implemented yet
@@ -120,7 +119,7 @@ Planned for upcoming versions:
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 /public             → app icons & logos  
