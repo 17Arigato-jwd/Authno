@@ -28,7 +28,7 @@ Authno is a **local-first writing tool** built specifically for **authors**, des
 
 Every file stays on your device — no accounts, no cloud sync, no online requirements.
 
-Authno uses a custom file format (`.authbook`) to save writing projects securely and quickly.
+Authno uses a custom file format (`.authbook`) to save writing projects quickly.
 
 ---
 
@@ -38,7 +38,6 @@ Authno uses a custom file format (`.authbook`) to save writing projects securely
 
 * Fully local.
 * Uses `.authbook` project files stored on your machine.
-* Files open the app when double-clicked (small limitation: content does not auto-load yet — you must open it from inside the app).
 
 ### **Cross-Platform**
 
@@ -50,7 +49,7 @@ Authno uses a custom file format (`.authbook`) to save writing projects securely
 * Core writing experience
 * Basic text formatting
 * Simple, clean interface
-* Shortcut support (e.g., **Ctrl + S** to save)
+* Shortcut support (e.g., **Ctrl + B** to bold)
 
 ---
 
@@ -64,7 +63,6 @@ Authno uses a custom file format (`.authbook`) to save writing projects securely
 
 **Figure 1.** Left — File manager opening a `.authbook` file. Center — Homescreen / dashboard (planned). Right — Example story showing formatting options.
 
-> Tip: click any image to open the full-size screenshot in a new tab.
 
 ---
 ## **Download Authno**
@@ -93,7 +91,6 @@ Planned for upcoming versions:
 
 ### **Core Improvements**
 
-* [ ] Auto-load `.authbook` files when opened
 * [ ] Add Settings menu
 * [ ] Implement Storyboards properly
 * [ ] Homescreen / dashboard view
@@ -135,5 +132,3 @@ Planned for upcoming versions:
 ## ❤️ Acknowledgments
 
 Authno is built slowly but passionately, with the goal of giving authors a **beautiful**, **offline**, distraction-free place to write.
-
-Just tell me!
