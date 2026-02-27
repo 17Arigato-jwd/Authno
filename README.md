@@ -23,29 +23,22 @@
 ---
 
 ## **What is Authno?**
-
 Authno is a **local-first writing tool** built specifically for **authors**, designed to let you write books, stories, drafts, and long-form text without distractions, lag, or reliance on the internet.
-
 Every file stays on your device — no accounts, no cloud sync, no online requirements.
-
 Authno uses a custom file format (`.authbook`) to save writing projects quickly.
 
 ---
 
 ## **Current Features**
-
 ### **Offline Support**
-
 * Fully local.
 * Uses `.authbook` project files stored on your machine.
 
 ### **Cross-Platform**
-
 * Windows
 * Linux (AppImage, DEB, RPM)
 
 ### **Basic Author Tools**
-
 * Core writing experience
 * Basic text formatting
 * Simple, clean interface
@@ -54,7 +47,6 @@ Authno uses a custom file format (`.authbook`) to save writing projects quickly.
 ---
 
 ## Screenshots
-
 <p align="center">
   <a href="./public/screenshots/authno-file.png"><img src="./public/screenshots/authno-file.png" alt="Authno file manager opening .authbook" width="300" style="margin:6px"/></a>
   <a href="./public/screenshots/authno-hs.png"><img src="./public/screenshots/authno-hs.png" alt="Authno homescreen" width="300" style="margin:6px"/></a>
@@ -66,15 +58,12 @@ Authno uses a custom file format (`.authbook`) to save writing projects quickly.
 
 ---
 ## **Download Authno**
-
 ### **Windows**
-
 **Installer (Recommended)**
 You’ll find it directly under the latest release as:
 `AuthNo-Setup-<version>.exe`
 
 ### **Linux**
-
 | Format                  | File                          |
 | ----------------------- | ----------------------------- |
 | **AppImage**            | `Authno-<version>.AppImage`   |
@@ -82,15 +71,12 @@ You’ll find it directly under the latest release as:
 | **RPM (Fedora/RedHat)** | `Authno-<version>.x86_64.rpm` |
 
 Go to the Releases page and download whichever matches your system.
-
 ---
 
 ## **Roadmap**
-
 Planned for upcoming versions:
 
 ### **Core Improvements**
-
 * [ ] Add Settings menu
 * [ ] Implement Storyboards properly
 * [ ] Homescreen / dashboard view
@@ -99,7 +85,6 @@ Planned for upcoming versions:
 * [ ] Editor feature expansion (formatting tools, search, more)
 
 ### **Future Experiments**
-
 * [ ] Chapter management
 * [ ] Writing statistics
 * [ ] Daily streaks with logic
@@ -108,7 +93,6 @@ Planned for upcoming versions:
 ---
 
 ## Known Limitations (Beta)
-
 * Some UI/UX roughness
 * Storyboard button currently behaves like "New Book"
 * Editing layout menu is not implemented yet
@@ -117,7 +101,6 @@ Planned for upcoming versions:
 ---
 
 ## Project Structure
-
 ```
 /public             → app icons & logos  
 /src                → React frontend  
@@ -126,5 +109,3 @@ Planned for upcoming versions:
 /fileManager.js     → Local file system logic  
 /dist               → Build output (ignored in repo)  
 ```
-
----
