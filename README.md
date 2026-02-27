@@ -69,7 +69,7 @@ Authno uses a custom file format (`.authbook`) to save writing projects quickly.
 
 ### **Windows**
 
-➡ **Installer (Recommended)**
+**Installer (Recommended)**
 You’ll find it directly under the latest release as:
 `AuthNo-Setup-<version>.exe`
 
@@ -128,7 +128,3 @@ Planned for upcoming versions:
 ```
 
 ---
-
-## ❤️ Acknowledgments
-
-Authno is built slowly but passionately, with the goal of giving authors a **beautiful**, **offline**, distraction-free place to write.
