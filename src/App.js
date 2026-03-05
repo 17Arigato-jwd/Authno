@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import Logo from "./logo.svg";
+import { Background } from "./components/Background";
 import { ReactComponent as FlameSVG } from "./assets/flame.svg";
 import { RotateCw } from "lucide-react";
 import EditorToolbar from "./components/EditorToolbar";
 import BurgerMenu from "./components/BurgerMenu";
 import Sidebar from "./components/Sidebar";
 import EditLayout from "./components/EditLayoutSidebar";
+import { Settings, DEFAULT_SETTINGS } from './components/Settings';
+import { CustomizationSlider, DEFAULT_CUSTOMIZATION } from './components/CustomizationSlider';
 
 
 /* === ICONS === */
@@ -88,7 +91,7 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu }) {
         </div>
       </header>
 
-      <main className="relative flex-1 p-6 bg-gradient-to-br from-[#012d73] to-black overflow-auto">
+      <main className="relative flex-1 p-6 overflow-auto">
         {current ? (
           <>
             <EditorToolbar execCommand={execCommand} />
@@ -145,12 +148,12 @@ export default function App() {
       }
   }, []);
 
-  // 💾 Save open books for next launch
+  //Save open books for next launch
   useEffect(() => {
     localStorage.setItem("openBooks", JSON.stringify(sessions));
   }, [sessions]);
 
-  // ✅ Receive validated books from preload (after existence check)
+  //Receive validated books from preload (after existence check)
   useEffect(() => {
     const handleRestore = (event) => {
       if (event.data.type === "restored-books") {
@@ -193,7 +196,7 @@ export default function App() {
 
       window.electron.onOpenAuthBook(listener);
 
-      // ✅ Clean up event listener when unmounting
+      //Clean up event listener when unmounting
       return () => {
         window.removeEventListener("open-authbook", listener);
       };
@@ -201,6 +204,26 @@ export default function App() {
   }, [sessions]);
 
 
+  const [customizerOpen, setCustomizerOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settings, setSettings] = useState(
+    JSON.parse(localStorage.getItem('writerSettings')) || DEFAULT_SETTINGS
+  );
+
+  // Persist on change:
+  const handleSaveSettings = (patch) => {
+    setSettings(patch);
+    localStorage.setItem('writerSettings', JSON.stringify(patch));
+  };
+
+
+  const [customization, setCustomization] = useState(
+    JSON.parse(localStorage.getItem('writerCustomization')) || DEFAULT_CUSTOMIZATION
+  );
+  const handleSaveCustomization = (patch) => {
+    setCustomization(patch);
+    localStorage.setItem('writerCustomization', JSON.stringify(patch));
+  };
 
   const newBook = () => {
     const id = Date.now().toString();
@@ -250,7 +273,17 @@ export default function App() {
   const current = sessions.find((s) => s.id === currentId) || null;
 
   return (
-    <div className="h-screen flex bg-[#050505] text-white">
+    <div className="h-screen flex text-white relative">
+      <Background
+        accentHex={customization.accentHex}
+        backgroundOpacity={customization.backgroundOpacity}
+        colorRange={{ from: customization.gradient.colorFrom, to: customization.gradient.colorTo }}
+        minBlobs={customization.gradient.blobCountMin}
+        maxBlobs={customization.gradient.blobCountMax}
+        blobSizeRange={{ min: customization.gradient.blobSizeMin, max: customization.gradient.blobSizeMax }}
+        blobSpeedMultiplier={customization.gradient.speedMultiplier}
+        visible={settings.enableGradient}
+      />
       <Sidebar
         sessions={filtered}
         onNewBook={newBook}
@@ -268,7 +301,6 @@ export default function App() {
           if (id === currentId) setCurrentId(null);
           localStorage.setItem("offlineWriterSessions", JSON.stringify(updated));
         }}
-        setView={setView}
       />
       {view === "layout" ? (
         <EditLayout sessions={sessions} setSessions={setSessions} />
@@ -285,8 +317,26 @@ export default function App() {
         onClose={() => setMenuOpen(false)}
         current={current}
         setSessions={setSessions}
+        onOpenSettings={() => { setMenuOpen(false); setSettingsOpen(true); }}
       />
 
+      <Settings
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        settings={settings}
+        onSave={handleSaveSettings}
+        onOpenCustomizer={() => setCustomizerOpen(true)}
+        onClearSessions={() => {
+          setSessions([]);
+          localStorage.removeItem('offlineWriterSessions');
+        }}
+      />
+      <CustomizationSlider
+        isOpen={customizerOpen}
+        onClose={() => setCustomizerOpen(false)}
+        customization={customization}
+        onSave={handleSaveCustomization}
+      />
       {/* Autosave indicator */}
       <div className="fixed bottom-4 right-4 flex items-center gap-3 text-white/40 text-sm select-none">
         {lastSaved && (

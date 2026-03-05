@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Save, SaveAll } from "lucide-react";
-
+import { Save, SaveAll, Settings as SettingsIcon } from "lucide-react";
 const electronAPI = window.electron; // safe preload bridge
 
-export default function BurgerMenu({ open, onClose, current, setSessions }) {
+export default function BurgerMenu({ open, onClose, current, setSessions, onOpenSettings }) {
   const [status, setStatus] = useState("idle");
   const menuRef = useRef(null);
 
@@ -98,6 +97,16 @@ export default function BurgerMenu({ open, onClose, current, setSessions }) {
       >
         <SaveAll className="w-4 h-4" />
         Save As...
+      </button>
+      <div className="h-px my-1" />
+      {/* SETTINGS */}
+      <button
+        onClick={onOpenSettings}
+        className="flex items-center gap-2 w-full px-3 py-2 rounded-md border-2 text-sm font-semibold
+                   border-white text-white hover:bg-white/10 transition-all duration-300 justify-center"
+      >
+        <SettingsIcon className="w-4 h-4" />
+        Settings
       </button>
     </div>
   );
