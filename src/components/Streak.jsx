@@ -107,19 +107,20 @@ function DayTooltip({ entry, dayLabel, accentHex, cellRef }) {
       }}
     >
       <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '4px' }}>{dayLabel}</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         {met
           ? <CheckCircle2 size={12} color={accentHex} />
           : <XCircle      size={12} color="#4f545c"   />
         }
-        <span style={{ fontSize: '12px', fontWeight: 600, color: met ? accentHex : '#96989d' }}>
-          {words.toLocaleString()} words
+        <span style={{ fontSize: '13px', fontWeight: 700, color: met ? accentHex : '#72767d' }}>
+          {words.toLocaleString()}
         </span>
         {goal !== null && (
-          <span style={{ fontSize: '11px', color: '#4f545c' }}>
-            / {goal.toLocaleString()} goal
+          <span style={{ fontSize: '10px', fontWeight: 500, color: '#4f545c', lineHeight: 1, alignSelf: 'flex-end', marginBottom: '1px' }}>
+            /{goal.toLocaleString()}
           </span>
         )}
+        <span style={{ fontSize: '11px', color: '#4f545c' }}>words</span>
       </div>
     </div>,
     document.body
