@@ -406,7 +406,7 @@ function StartupPanel({ settings, onChange, accentHex }) {
 }
 
 function WritingGoalPanel({ settings, onChange, accentHex }) {
-  const goal = settings.dailyWordGoal ?? 300;
+  const goal = settings.dailyWordGoal ?? 500;
   const [inputVal, setInputVal] = useState(String(goal));
 
   const commit = () => {
@@ -415,7 +415,7 @@ function WritingGoalPanel({ settings, onChange, accentHex }) {
     else setInputVal(String(goal));
   };
 
-  const presets = [100, 250, 500, 750, 1000];
+  const presets = [100, 300, 500, 1000, 1500];
 
   return (
     <div>
@@ -476,10 +476,10 @@ function WritingGoalPanel({ settings, onChange, accentHex }) {
         borderRadius: '10px', padding: '14px 16px',
       }}>
         <div style={{ fontSize: '12px', color: '#72767d', lineHeight: 1.7 }}>
-          <div>📖 <strong style={{ color: '#b9bbbe' }}>100 words</strong> — A short journal entry</div>
-          <div>✍️ <strong style={{ color: '#b9bbbe' }}>300 words</strong> — A focused session</div>
-          <div>🔥 <strong style={{ color: '#b9bbbe' }}>500 words</strong> — NaNoWriMo pace</div>
-          <div>⚡ <strong style={{ color: '#b9bbbe' }}>1000 words</strong> — Serious daily output</div>
+          <div>📖 <strong style={{ color: '#b9bbbe' }}>150 words</strong> — A short journal entry</div>
+          <div>✍️ <strong style={{ color: '#b9bbbe' }}>500 words</strong> — A focused session</div>
+          <div>🔥 <strong style={{ color: '#b9bbbe' }}>1000 words</strong> — A strong daily output</div>
+          <div>⚡ <strong style={{ color: '#b9bbbe' }}>1500 words</strong> — An Average Webnovel Chapter</div>
         </div>
       </div>
 
