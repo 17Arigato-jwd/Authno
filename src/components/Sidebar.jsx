@@ -17,6 +17,7 @@ export default function Sidebar({
   const [editMode, setEditMode] = useState(false);
   const [bookDropdownOpen, setBookDropdownOpen] = useState(false);
   const sidebarRef = useRef(null);
+  const contextMenuRef = useRef(null);
   const dragState = useRef({});
 
   const [sidebarWidth, setSidebarWidth] = useState(() => {
@@ -29,14 +30,15 @@ export default function Sidebar({
   // === Close menus when clicking outside ===
   useEffect(() => {
     const handleClickOutside = (e) => {
+      if (contextMenuRef.current && contextMenuRef.current.contains(e.target)) return;
       if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
         setContextMenu(null);
-        setEditMode(false);
         setBookDropdownOpen(false);
+        // editMode intentionally NOT reset here — user exits via "Done Editing" button
       }
     };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // === Context Menu ===
@@ -275,7 +277,8 @@ export default function Sidebar({
         <div className="relative flex-1">
           <button
             onClick={() => setBookDropdownOpen((v) => !v)}
-            className="w-full border-2 border-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/5 transition"
+            style={{ borderColor: accentHex, color: accentHex }}
+            className="w-full border-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/5 transition"
           >
             + New Book ▾
           </button>
@@ -307,7 +310,8 @@ export default function Sidebar({
         {/* New Storyboard */}
         <button
           onClick={onNewStoryboard}
-          className="flex-1 border-2 border-white rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/5 transition"
+          style={{ borderColor: accentHex, color: accentHex }}
+          className="flex-1 border-2 rounded-lg px-3 py-2 text-sm font-semibold hover:bg-white/5 transition"
         >
           + Storyboard
         </button>
@@ -319,7 +323,8 @@ export default function Sidebar({
         <div className="p-3 border-b border-white/10">
           <button
             onClick={() => setEditMode(false)}
-            className="w-full border-2 border-white rounded-lg px-3 py-2 text-sm font-semibold bg-white/10 hover:bg-white/20 transition"
+            style={{ borderColor: accentHex, color: accentHex }}
+            className="w-full border-2 rounded-lg px-3 py-2 text-sm font-semibold bg-white/5 hover:bg-white/10 transition"
           >
             ✅ Done Editing
           </button>
@@ -355,9 +360,18 @@ export default function Sidebar({
                   }
                   className={`text-left px-3 py-2 rounded-md border-2 transition cursor-pointer select-none ${
                     s.id === currentId && !editMode
-                      ? "border-white/40 bg-white/5"
-                      : "border-white/10 hover:border-white/40"
+                      ? "bg-white/5"
+                      : editMode
+                      ? "border-white/10"
+                      : "border-white/10 hover:border-white/30"
                   } ${editMode ? "animate-wobble cursor-grab" : ""}`}
+                  style={
+                    s.id === currentId && !editMode
+                      ? { borderColor: accentHex }
+                      : editMode
+                      ? { borderColor: `${accentHex}55` }
+                      : {}
+                  }
                 >
                   <div className="font-medium">{s.title}</div>
                   <div className="text-xs text-white/40">
@@ -374,10 +388,8 @@ export default function Sidebar({
       {/* FLOATING CONTEXT MENU */}
       {contextMenu?.visible && (
         <div
-          style={{
-            top: contextMenu.y,
-            left: contextMenu.x,
-          }}
+          ref={contextMenuRef}
+          style={{ top: contextMenu.y, left: contextMenu.x }}
           className="fixed z-50 p-2 rounded-lg shadow-xl border border-white/30 backdrop-blur-md"
         >
         <div
@@ -409,7 +421,9 @@ export default function Sidebar({
       {/* RESIZE HANDLE */}
     <div
       onMouseDown={() => (isResizing.current = true)}
-      className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize bg-transparent hover:bg-blue-400/40 transition"
+      onMouseEnter={e => e.currentTarget.style.background = `${accentHex}66`}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+      className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize bg-transparent transition"
       style={{ zIndex: 100 }}
     />
     </aside>
