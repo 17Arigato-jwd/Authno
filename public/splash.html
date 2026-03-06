@@ -4,47 +4,78 @@
     <meta charset="UTF-8" />
     <title>AuthNo — Loading...</title>
     <style>
-      html, body {
+      *, *::before, *::after {
+        box-sizing: border-box;
         margin: 0;
+        padding: 0;
+      }
+
+      html {
         height: 100%;
-        width: 100%;
+      }
+
+      body {
+        min-height: 100vh;
+        width: 100vw;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #012d73, #000);
+        background: linear-gradient(135deg, #012d73 0%, #000000 100%);
         color: white;
-        font-family: "Poppins", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
         overflow: hidden;
+        user-select: none;
       }
-      .fade-in {
-        animation: fadein 1.2s ease-in-out forwards;
+
+      .container {
+        text-align: center;
+        animation: fadein 1s ease-in-out forwards;
+        opacity: 0;
       }
+
       @keyframes fadein {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0px);  }
       }
+
       .logo {
-        width: 120px;
-        height: 120px;
-        border-radius: 20%;
-        box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        width: 100px;
+        height: 100px;
+        border-radius: 22%;
+        box-shadow: 0 0 32px rgba(100, 160, 255, 0.25);
+        margin-bottom: 18px;
       }
+
       h1 {
-        font-size: 1.8rem;
-        margin-top: 16px;
-        opacity: 0.9;
+        font-size: 1.7rem;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+        opacity: 0.92;
+        margin-bottom: 6px;
       }
+
       p {
-        font-size: 0.9rem;
-        opacity: 0.7;
+        font-size: 0.85rem;
+        opacity: 0.5;
+        letter-spacing: 0.3px;
+      }
+
+      /* Subtle pulse on the loading text */
+      .loading-text {
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.5; }
+        50%       { opacity: 0.85; }
       }
     </style>
   </head>
   <body>
-    <div class="fade-in" style="text-align: center;">
+    <div class="container">
       <img src="authno.png" alt="AuthNo Logo" class="logo" />
       <h1>AuthNo</h1>
-      <p>Loading your workspace...</p>
+      <p class="loading-text">Loading your workspace...</p>
     </div>
   </body>
 </html>

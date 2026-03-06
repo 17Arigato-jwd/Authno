@@ -1,41 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
-import { X, Sliders, Sparkles, ChevronRight } from 'lucide-react';
-import Background from "./Background";
-// ─── Colour math helpers ──────────────────────────────────────────────────────
-
-function hslToHex(h, s, l) {
-  s /= 100; l /= 100;
-  const k = n => (n + h / 30) % 12;
-  const a = s * Math.min(l, 1 - l);
-  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-  const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
-  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
-}
-
-function hexToHue(hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (!result) return 0;
-  let r = parseInt(result[1], 16) / 255;
-  let g = parseInt(result[2], 16) / 255;
-  let b = parseInt(result[3], 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  if (max === min) return 0;
-  const d = max - min;
-  let h;
-  if (max === r)      h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-  else if (max === g) h = ((b - r) / d + 2) / 6;
-  else                h = ((r - g) / d + 4) / 6;
-  return Math.round(h * 360);
-}
+import { X, Sliders, Sparkles } from 'lucide-react';
+import { ColorPicker } from './ColorPicker';
 
 // ─── Default state ────────────────────────────────────────────────────────────
 
 export const DEFAULT_CUSTOMIZATION = {
-  accentHex:         '#3b82f6',
+  accentHex:         '#5a00d9',
   backgroundOpacity: 1.0,
   gradient: {
-    colorFrom:          '#3b82f6',
-    colorTo:            '#ec4899',
+    colorFrom:          '#5a00d9',
+    colorTo:            '#6300d4',
     blobCountMin:       7,
     blobCountMax:       9,
     blobSizeMin:        20,
@@ -47,8 +21,8 @@ export const DEFAULT_CUSTOMIZATION = {
 // ─── Nav items ────────────────────────────────────────────────────────────────
 
 const NAV = [
-  { id: 'background', label: 'Background',           icon: Sliders,   group: 'Colors'   },
-  { id: 'gradient',   label: 'Gradient Customizer',  icon: Sparkles,  group: 'Effects'  },
+  { id: 'background', label: 'Background',          icon: Sliders,  group: 'Colors'  },
+  { id: 'gradient',   label: 'Gradient Customizer', icon: Sparkles, group: 'Effects' },
 ];
 
 // ─── Shared primitives ────────────────────────────────────────────────────────
@@ -81,7 +55,6 @@ function Divider() {
 }
 
 // ─── Track-styled range slider ────────────────────────────────────────────────
-// Renders the filled portion using a CSS linear-gradient on the track.
 
 function StyledSlider({ min, max, step = 1, value, onChange, trackGradient, accentHex }) {
   const pct = ((value - min) / (max - min)) * 100;
@@ -93,12 +66,9 @@ function StyledSlider({ min, max, step = 1, value, onChange, trackGradient, acce
       <style>{`
         .cslider::-webkit-slider-thumb {
           -webkit-appearance: none;
-          width: 18px; height: 18px;
-          border-radius: 50%;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(0,0,0,0.4);
-          cursor: pointer;
-          transition: transform 0.1s;
+          width: 18px; height: 18px; border-radius: 50%;
+          background: #fff; box-shadow: 0 0 0 3px rgba(0,0,0,0.4);
+          cursor: pointer; transition: transform 0.1s;
         }
         .cslider::-webkit-slider-thumb:hover { transform: scale(1.15); }
         .cslider::-moz-range-thumb {
@@ -119,7 +89,7 @@ function StyledSlider({ min, max, step = 1, value, onChange, trackGradient, acce
   );
 }
 
-// Dual-thumb slider (min/max) — two overlapping native inputs
+// Dual-thumb slider (min/max)
 function DualSlider({ min, max, step = 1, valueMin, valueMax, onChangeMin, onChangeMax, accentHex }) {
   const pctMin = ((valueMin - min) / (max - min)) * 100;
   const pctMax = ((valueMax - min) / (max - min)) * 100;
@@ -166,57 +136,17 @@ function DualSlider({ min, max, step = 1, valueMin, valueMax, onChangeMin, onCha
 // ─── Panels ───────────────────────────────────────────────────────────────────
 
 function AccentPanel({ customization, onChange, accentHex }) {
-  const currentHue = hexToHue(customization.accentHex ?? accentHex);
-
-  const hueGradient = Array.from({ length: 7 }, (_, i) => `hsl(${i * 60},75%,55%)`).join(',');
-
   return (
     <div>
       <SectionTitle>Accent Color</SectionTitle>
-      <SectionSubtitle>Drag the hue slider to set your accent colour.</SectionSubtitle>
+      <SectionSubtitle>Pick your accent colour — adjust hue, saturation, and brightness.</SectionSubtitle>
 
-      {/* Big colour preview */}
-      <div style={{
-        height: '80px', borderRadius: '12px', marginBottom: '24px',
-        background: `linear-gradient(135deg, ${hslToHex(currentHue, 75, 35)}, ${hslToHex(currentHue, 75, 55)}, ${hslToHex(currentHue, 60, 70)})`,
-        border: '1px solid rgba(255,255,255,0.1)',
-        boxShadow: `0 0 40px ${hslToHex(currentHue, 75, 55)}55`,
-        transition: 'background 0.1s, box-shadow 0.1s',
-      }} />
-
-      <Label right={`${currentHue}°`}>Hue</Label>
-      <StyledSlider
-        min={0} max={359} step={1}
-        value={currentHue}
-        accentHex={hslToHex(currentHue, 75, 55)}
-        trackGradient={`linear-gradient(to right, ${hueGradient})`}
-        onChange={hue => onChange({ accentHex: hslToHex(hue, 75, 55) })}
+      <ColorPicker
+        inline
+        canvasSize={320}
+        value={customization.accentHex ?? accentHex}
+        onChange={hex => onChange({ accentHex: hex })}
       />
-
-      <Divider />
-
-      {/* Quick presets */}
-      <Label>Quick Presets</Label>
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-        {[0, 30, 120, 200, 260, 320].map(hue => {
-          const hex = hslToHex(hue, 75, 55);
-          const active = Math.abs(currentHue - hue) < 8;
-          return (
-            <button
-              key={hue}
-              onClick={() => onChange({ accentHex: hex })}
-              style={{
-                width: '36px', height: '36px', borderRadius: '50%',
-                background: hex, border: 'none', cursor: 'pointer',
-                outline: active ? '3px solid #fff' : '3px solid transparent',
-                outlineOffset: '2px',
-                transform: active ? 'scale(1.15)' : 'scale(1)',
-                transition: 'all 0.15s',
-              }}
-            />
-          );
-        })}
-      </div>
     </div>
   );
 }
@@ -235,7 +165,6 @@ function BackgroundPanel({ customization, onChange, accentHex }) {
         position: 'relative', overflow: 'hidden',
         border: '1px solid rgba(255,255,255,0.1)',
       }}>
-        {/* Checkerboard base to show transparency */}
         <div style={{
           position: 'absolute', inset: 0,
           backgroundImage: 'linear-gradient(45deg, #333 25%, transparent 25%), linear-gradient(-45deg, #333 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #333 75%), linear-gradient(-45deg, transparent 75%, #333 75%)',
@@ -275,9 +204,7 @@ function BackgroundPanel({ customization, onChange, accentHex }) {
 
 function GradientPanel({ customization, onChange, accentHex }) {
   const g = customization.gradient ?? DEFAULT_CUSTOMIZATION.gradient;
-
   const update = patch => onChange({ gradient: { ...g, ...patch } });
-
   const gradientPreview = `linear-gradient(to right, ${g.colorFrom}, ${g.colorTo})`;
 
   return (
@@ -288,63 +215,26 @@ function GradientPanel({ customization, onChange, accentHex }) {
       {/* ── Colour Range ── */}
       <Label>Blob Color Range</Label>
       <div style={{
-        height: '40px', borderRadius: '8px', marginBottom: '16px',
+        height: '40px', borderRadius: '8px', marginBottom: '20px',
         background: gradientPreview,
         border: '1px solid rgba(255,255,255,0.1)',
         boxShadow: `0 0 20px ${g.colorFrom}33, 0 0 20px ${g.colorTo}33`,
         transition: 'background 0.15s',
       }} />
 
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
-        {/* From */}
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.6px' }}>From</div>
-          <label style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            padding: '8px 10px', borderRadius: '8px',
-            background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)',
-            cursor: 'pointer',
-          }}>
-            <div style={{ width: '24px', height: '24px', borderRadius: '6px', background: g.colorFrom, flexShrink: 0 }} />
-            <span style={{ fontSize: '12px', color: '#dcddde', fontFamily: 'monospace' }}>{g.colorFrom}</span>
-            <input type="color" value={g.colorFrom}
-              onChange={e => update({ colorFrom: e.target.value })}
-              style={{ opacity: 0, position: 'absolute', pointerEvents: 'none' }}
-            />
-          </label>
-          <input type="color" value={g.colorFrom}
-            onChange={e => update({ colorFrom: e.target.value })}
-            style={{
-              width: '100%', height: '6px', border: 'none',
-              borderRadius: '3px', cursor: 'pointer', marginTop: '8px',
-              background: 'transparent',
-            }}
+      <div style={{ display: 'flex', gap: '24px', marginBottom: '24px' }}>
+        <div>
+          <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.6px' }}>From</div>
+          <ColorPicker
+            value={g.colorFrom}
+            onChange={v => update({ colorFrom: v })}
           />
         </div>
-
-        {/* To */}
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.6px' }}>To</div>
-          <label style={{
-            display: 'flex', alignItems: 'center', gap: '8px',
-            padding: '8px 10px', borderRadius: '8px',
-            background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.08)',
-            cursor: 'pointer',
-          }}>
-            <div style={{ width: '24px', height: '24px', borderRadius: '6px', background: g.colorTo, flexShrink: 0 }} />
-            <span style={{ fontSize: '12px', color: '#dcddde', fontFamily: 'monospace' }}>{g.colorTo}</span>
-            <input type="color" value={g.colorTo}
-              onChange={e => update({ colorTo: e.target.value })}
-              style={{ opacity: 0, position: 'absolute', pointerEvents: 'none' }}
-            />
-          </label>
-          <input type="color" value={g.colorTo}
-            onChange={e => update({ colorTo: e.target.value })}
-            style={{
-              width: '100%', height: '6px', border: 'none',
-              borderRadius: '3px', cursor: 'pointer', marginTop: '8px',
-              background: 'transparent',
-            }}
+        <div>
+          <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.6px' }}>To</div>
+          <ColorPicker
+            value={g.colorTo}
+            onChange={v => update({ colorTo: v })}
           />
         </div>
       </div>
@@ -531,7 +421,6 @@ export function CustomizationSlider({ isOpen, onClose, customization = DEFAULT_C
 
         {/* ── Content ── */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '32px 36px', position: 'relative' }}>
-          {/* Close */}
           <button
             onClick={onClose}
             style={{

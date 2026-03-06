@@ -20,7 +20,7 @@ function reducer(state, action) {
   }
 }
 
-export default function EditorToolbar({ execCommand }) {
+export default function EditorToolbar({ execCommand, accentHex }) {
   const [activeButtons, dispatch] = useReducer(reducer, initialState);
 
   const fontRef = useRef("Arial");
@@ -88,10 +88,16 @@ export default function EditorToolbar({ execCommand }) {
           e.preventDefault();
           toggleHighlight();
           break;
+        case "s":
+          e.preventDefault();
+          window.electron?.saveBook && document.dispatchEvent(new CustomEvent("triggerSave"));
+          break;
         default:
           break;
       }
     };
+
+    
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
@@ -110,9 +116,12 @@ export default function EditorToolbar({ execCommand }) {
   return (
     <div
       className="sticky top-4 z-50 left-1/2 transform flex items-center gap-3 px-4 py-2
-      rounded-2xl backdrop-blur-md bg-gradient-to-br from-[#012d73]/70 to-black/70
+      rounded-2xl backdrop-blur-md
       ring-2 ring-white/70 shadow-[0_0_20px_2px_rgba(255,255,255,0.1)]
       transition-all duration-300"
+      style={{
+        background: `linear-gradient(to bottom right, ${accentHex}B3, rgba(0,0,0,0.7))`
+      }}
     >
       <FontSelector defaultValue="Arial" onChange={handleFontChange} />
       <SizeSelector defaultValue="3" onChange={handleSizeChange} />

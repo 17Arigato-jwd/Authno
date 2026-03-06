@@ -1,5 +1,4 @@
 import { useEffect, useState, memo, useRef } from 'react';
-
 // ─── Keyframe injection ───────────────────────────────────────────────────────
 const STYLE_ID = 'bg-blob-keyframes';
 
@@ -89,6 +88,7 @@ function mixWithBlack(hex, percent) {
 export function buildPalette(accentHex) {
   return {
     accent: accentHex,
+    light:  interpolateColor(accentHex, '#ffffff', 0.35),
     dark:   mixWithBlack(accentHex, 0.25),
     base:   mixWithBlack(accentHex, 0.08),
   };
@@ -143,7 +143,7 @@ export function Background({
 
     let color;
     if (isLight) {
-      color = Math.random() > 0.5 ? '#ffffff' : '#60a5fa';
+      color = Math.random() > 0.5 ? '#ffffff' : c.light;
     } else if (cr) {
       color = interpolateColor(cr.from, cr.to, Math.random());
     } else {
@@ -240,7 +240,7 @@ export function Background({
         style={{
           position:   'absolute',
           inset:      0,
-          background: `linear-gradient(to bottom left, ${accentHex}55 0%, ${accentHex}18 40%, transparent 100%)`,
+          background: `linear-gradient(to bottom left, ${accentHex}55 0%, ${accentHex}22 45%, ${accentHex}0a 70%, transparent 100%)`,
           opacity:    visible ? 0 : 1,
           transition: 'opacity 2000ms ease-in-out',
         }}

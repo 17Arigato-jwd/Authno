@@ -1,17 +1,44 @@
 // main.js
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const fs = require("fs");
 
 let mainWindow;
 let splash;
 let openFilePath = null;
 
-// 🟢 Handle file open (macOS)
+// 🟢 Handle file open (macOS — fired before app is ready)
 app.on("open-file", (event, filePath) => {
   event.preventDefault();
   openFilePath = filePath;
   if (mainWindow) {
-    mainWindow.webContents.send("open-authbook", filePath);
+    sendParsedFile(mainWindow, filePath);
+  }
+});
+
+// ── Read + parse a .authbook file and send it to the renderer ──
+function sendParsedFile(win, filePath) {
+  try {
+    const raw = fs.readFileSync(filePath, "utf-8");
+    const content = JSON.parse(raw);
+    win.webContents.send("open-authbook", { ...content, filePath });
+  } catch (err) {
+    console.error("❌ Failed to read authbook:", err);
+  }
+}
+
+// ── Renderer calls this on mount to pick up any file the app was launched with ──
+ipcMain.handle("get-pending-file", () => {
+  if (!openFilePath) return null;
+  try {
+    const raw = fs.readFileSync(openFilePath, "utf-8");
+    const content = JSON.parse(raw);
+    const result = { ...content, filePath: openFilePath };
+    openFilePath = null; // clear so it isn't delivered twice
+    return result;
+  } catch (err) {
+    console.error("❌ get-pending-file failed:", err);
+    return null;
   }
 });
 
@@ -26,7 +53,7 @@ if (!gotTheLock) {
     if (filePath && mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
-      mainWindow.webContents.send("open-authbook", filePath);
+      sendParsedFile(mainWindow, filePath);
     }
   });
 
@@ -68,9 +95,8 @@ if (!gotTheLock) {
         if (splash && !splash.isDestroyed()) splash.close();
         mainWindow.show();
 
-        if (openFilePath && openFilePath.endsWith(".authbook")) {
-          mainWindow.webContents.send("open-authbook", openFilePath);
-        }
+        // openFilePath is delivered via get-pending-file IPC on renderer mount
+        // No need to send here — avoids double delivery
       }, 1500);
     });
 

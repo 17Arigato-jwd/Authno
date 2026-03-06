@@ -35,4 +35,7 @@ contextBridge.exposeInMainWorld("electron", {
       callback(fileData);
     });
   },
+
+  // --- 🚀 Pull any file the app was cold-launched with ---
+  getInitialFile: () => ipcRenderer.invoke("get-pending-file"),
 });

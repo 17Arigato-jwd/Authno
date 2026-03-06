@@ -43,7 +43,7 @@ function FlameButton() {
 }
 
 /* === EDITOR === */
-function Editor({ current, onEditTitle, onEditContent, onToggleMenu }) {
+function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex }) {
   const [title, setTitle] = useState(current?.title || "");
   const editorRef = useRef(null);
 
@@ -94,7 +94,10 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu }) {
       <main className="relative flex-1 p-6 overflow-auto">
         {current ? (
           <>
-            <EditorToolbar execCommand={execCommand} />
+            <EditorToolbar
+              execCommand={execCommand}
+              accentHex={accentHex}
+            />
             <div
               ref={editorRef}
               contentEditable
@@ -132,6 +135,27 @@ export default function App() {
     if (saved) {
       setSessions(JSON.parse(saved));
       if (savedId) setCurrentId(savedId);
+    }
+
+    // 🚀 Pull any file the app was launched with (double-click / OS open)
+    if (window.electron?.getInitialFile) {
+      window.electron.getInitialFile().then((book) => {
+        if (!book) return;
+        const newBook = {
+          id: Date.now().toString(),
+          title: book.title || "Untitled Book",
+          content: book.content || "",
+          preview: (book.content || "").replace(/<[^>]*>?/gm, "").slice(0, 60) + "...",
+          filePath: book.filePath,
+          type: "book",
+          created: new Date().toISOString(),
+          updated: new Date().toISOString(),
+        };
+        setSessions((prev) =>
+          prev.some((s) => s.filePath === newBook.filePath) ? prev : [newBook, ...prev]
+        );
+        setCurrentId(newBook.id);
+      });
     }
 
     // 🔹 Restore previously open books from file paths (via preload)
@@ -214,6 +238,12 @@ export default function App() {
   const handleSaveSettings = (patch) => {
     setSettings(patch);
     localStorage.setItem('writerSettings', JSON.stringify(patch));
+    // Sync accent colour → customization so all components update
+    if (patch.accentHex !== undefined) {
+      const updatedCustomization = { ...customization, accentHex: patch.accentHex };
+      setCustomization(updatedCustomization);
+      localStorage.setItem('writerCustomization', JSON.stringify(updatedCustomization));
+    }
   };
 
 
@@ -294,6 +324,7 @@ export default function App() {
         onSelect={handleSelect}
         currentId={currentId}
         setView={setView}
+        accentHex={customization.accentHex}
         onDelete={(id) => {
           const updated = sessions.filter((s) => s.id !== id);
           setSessions(updated);
@@ -310,6 +341,7 @@ export default function App() {
           onEditTitle={handleEditTitle}
           onEditContent={handleEditContent}
           onToggleMenu={() => setMenuOpen((v) => !v)}
+          accentHex={customization.accentHex}
         />
       )}
       <BurgerMenu
@@ -318,6 +350,7 @@ export default function App() {
         current={current}
         setSessions={setSessions}
         onOpenSettings={() => { setMenuOpen(false); setSettingsOpen(true); }}
+        accentHex={customization.accentHex}
       />
 
       <Settings

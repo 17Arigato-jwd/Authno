@@ -5,6 +5,7 @@ import {
   BookMarked, FilePlus, ChevronRight, Zap, Sliders, Sun,
 } from 'lucide-react';
 import { buildPalette } from './Background';
+import { ColorPicker } from './ColorPicker';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -257,20 +258,10 @@ function AppearancePanel({ settings, onChange, accentHex, onOpenCustomizer }) {
             }}
           />
         ))}
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <input
-            type="color"
-            value={customHex}
-            onChange={(e) => { setCustomHex(e.target.value); onChange({ accentHex: e.target.value }); }}
-            style={{
-              width: '36px', height: '36px', borderRadius: '50%',
-              border: 'none', cursor: 'pointer', padding: 0, background: 'transparent',
-              outline: isCustom ? '3px solid #fff' : '3px solid rgba(255,255,255,0.2)',
-              outlineOffset: '2px',
-            }}
-            title="Custom color"
-          />
-        </div>
+        <ColorPicker
+          value={settings.accentHex || '#3b82f6'}
+          onChange={(hex) => { setCustomHex(hex); onChange({ accentHex: hex }); }}
+        />
       </div>
 
       {/* Palette preview */}
@@ -514,7 +505,7 @@ function DataPanel({ settings, onChange, accentHex, onClearSessions }) {
 export const DEFAULT_SETTINGS = {
   displayName: '',
   avatarDataUrl: null,
-  accentHex: '#3b82f6',
+  accentHex: '#5a00d9',
   enableGradient: false,
   lightMode: false,
   startupBehavior: 'last',

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Save, SaveAll, Settings as SettingsIcon } from "lucide-react";
 const electronAPI = window.electron; // safe preload bridge
 
-export default function BurgerMenu({ open, onClose, current, setSessions, onOpenSettings }) {
+export default function BurgerMenu({ open, onClose, current, setSessions, onOpenSettings, accentHex }) {
   const [status, setStatus] = useState("idle");
   const menuRef = useRef(null);
 
@@ -15,8 +15,6 @@ export default function BurgerMenu({ open, onClose, current, setSessions, onOpen
     if (open) document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open, onClose]);
-
-  if (!open) return null;
 
   const handleSave = async () => {
     if (!current) return;
@@ -58,12 +56,22 @@ export default function BurgerMenu({ open, onClose, current, setSessions, onOpen
     }
   };
 
+  useEffect(() => {
+    const handler = () => handleSave();
+    document.addEventListener("triggerSave", handler);
+    return () => document.removeEventListener("triggerSave", handler);
+  }, [current]); // re-bind when current changes
+
+  if (!open) return null;
+
   return (
     <div
       ref={menuRef}
       className="absolute top-14 right-6 z-50 w-48 rounded-xl p-3 shadow-lg backdrop-blur-md
-                 border border-white/20 bg-gradient-to-br from-[#012d73]/95 to-black/95
-                 animate-fadeIn"
+                 border border-white/20 animate-fadeIn"
+      style={{
+        background: `linear-gradient(to bottom right, ${accentHex}F2, rgba(0,0,0,0.95))`
+      }}
     >
       {/* SAVE */}
       <button

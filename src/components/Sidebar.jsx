@@ -11,6 +11,7 @@ export default function Sidebar({
   onSelect,
   currentId,
   onDelete,
+  accentHex,
 }) {
   const [contextMenu, setContextMenu] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -379,13 +380,14 @@ export default function Sidebar({
           }}
           className="fixed z-50 p-2 rounded-lg shadow-xl border border-white/30 backdrop-blur-md"
         >
-          <div
-            className="bg-gradient-to-br from-[#012d73] to-black text-white rounded-lg overflow-hidden border border-white/20"
-            style={{
-              boxShadow: "0 0 10px rgba(255,255,255,0.1)",
-              minWidth: "120px",
-            }}
-          >
+        <div
+          className="text-white rounded-lg overflow-hidden border border-white/20"
+          style={{
+            background: `linear-gradient(to bottom right, ${accentHex}, black)`,
+            boxShadow: "0 0 10px rgba(255,255,255,0.1)",
+            minWidth: "120px",
+          }}
+        >
             <button
               onClick={handleDelete}
               className="w-full text-left px-3 py-2 text-sm hover:bg-white/10 transition"
