@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Logo from "./logo.svg";
 import { Background } from "./components/Background";
-import { ReactComponent as FlameSVG } from "./assets/flame.svg";
 import { RotateCw } from "lucide-react";
 import EditorToolbar from "./components/EditorToolbar";
 import BurgerMenu from "./components/BurgerMenu";
@@ -9,6 +8,7 @@ import Sidebar from "./components/Sidebar";
 import EditLayout from "./components/EditLayoutSidebar";
 import { Settings, DEFAULT_SETTINGS } from './components/Settings';
 import { CustomizationSlider, DEFAULT_CUSTOMIZATION } from './components/CustomizationSlider';
+import { FlameButton } from './components/Streak';
 
 
 /* === ICONS === */
@@ -18,32 +18,8 @@ const BurgerIcon = ({ className }) => (
   </svg>
 );
 
-/* === FLAME BUTTON === */
-function FlameButton() {
-  const [lit, setLit] = useState(false);
-
-  return (
-    <button
-      onClick={() => setLit((v) => !v)}
-      className={`p-2 border-2 border-white rounded-md flex items-center justify-center transition-all duration-300 hover:scale-105 ${
-        lit ? "bg-white/5 shadow-[0_0_15px_3px_rgba(255,120,0,0.4)]" : ""
-      }`}
-    >
-      <FlameSVG
-        width="22"
-        height="22"
-        className={`transition-all duration-500 ${
-          lit
-            ? "text-orange-400 animate-flame"
-            : "text-white drop-shadow-[0_0_2px_#ffffff80]"
-        }`}
-      />
-    </button>
-  );
-}
-
 /* === EDITOR === */
-function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex }) {
+function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, goalWords, onStreakUpdate }) {
   const [title, setTitle] = useState(current?.title || "");
   const editorRef = useRef(null);
 
@@ -81,7 +57,12 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex }
         </div>
 
         <div className="flex items-center gap-3">
-          <FlameButton />
+          <FlameButton
+            current={current}
+            accentHex={accentHex}
+            goalWords={goalWords}
+            onStreakUpdate={onStreakUpdate}
+          />
           <button
             onClick={onToggleMenu}
             className="p-2 border-2 border-white rounded-md hover:bg-white/5 transition"
@@ -135,27 +116,6 @@ export default function App() {
     if (saved) {
       setSessions(JSON.parse(saved));
       if (savedId) setCurrentId(savedId);
-    }
-
-    // 🚀 Pull any file the app was launched with (double-click / OS open)
-    if (window.electron?.getInitialFile) {
-      window.electron.getInitialFile().then((book) => {
-        if (!book) return;
-        const newBook = {
-          id: Date.now().toString(),
-          title: book.title || "Untitled Book",
-          content: book.content || "",
-          preview: (book.content || "").replace(/<[^>]*>?/gm, "").slice(0, 60) + "...",
-          filePath: book.filePath,
-          type: "book",
-          created: new Date().toISOString(),
-          updated: new Date().toISOString(),
-        };
-        setSessions((prev) =>
-          prev.some((s) => s.filePath === newBook.filePath) ? prev : [newBook, ...prev]
-        );
-        setCurrentId(newBook.id);
-      });
     }
 
     // 🔹 Restore previously open books from file paths (via preload)
@@ -255,6 +215,13 @@ export default function App() {
     localStorage.setItem('writerCustomization', JSON.stringify(patch));
   };
 
+  // Update streak data inside the current session (saved to .authbook on next manual save)
+  const handleStreakUpdate = useCallback((updatedStreak) => {
+    setSessions(prev => prev.map(s =>
+      s.id === currentId ? { ...s, streak: updatedStreak } : s
+    ));
+  }, [currentId]);
+
   const newBook = () => {
     const id = Date.now().toString();
     const now = new Date().toISOString();
@@ -342,6 +309,8 @@ export default function App() {
           onEditContent={handleEditContent}
           onToggleMenu={() => setMenuOpen((v) => !v)}
           accentHex={customization.accentHex}
+          goalWords={settings.dailyWordGoal ?? 300}
+          onStreakUpdate={handleStreakUpdate}
         />
       )}
       <BurgerMenu

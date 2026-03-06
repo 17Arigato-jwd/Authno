@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   X, User, Palette, Database, BookOpen,
   Camera, Check, Trash2, RefreshCw, AlertTriangle,
-  BookMarked, FilePlus, ChevronRight, Zap, Sliders, Sun,
+  BookMarked, FilePlus, ChevronRight, Zap, Sliders, Sun, Target,
 } from 'lucide-react';
 import { buildPalette } from './Background';
 import { ColorPicker } from './ColorPicker';
@@ -21,6 +21,7 @@ const ACCENT_PRESETS = [
 const NAV_ITEMS = [
   { id: 'profile',    label: 'Profile',          icon: User,     group: 'User' },
   { id: 'appearance', label: 'Appearance',        icon: Palette,  group: 'User' },
+  { id: 'writing',    label: 'Writing Goal',      icon: Target,   group: 'User' },
   { id: 'startup',    label: 'Startup Behavior',  icon: BookOpen, group: 'App'  },
   { id: 'data',       label: 'Data Management',   icon: Database, group: 'App'  },
 ];
@@ -404,6 +405,91 @@ function StartupPanel({ settings, onChange, accentHex }) {
   );
 }
 
+function WritingGoalPanel({ settings, onChange, accentHex }) {
+  const goal = settings.dailyWordGoal ?? 300;
+  const [inputVal, setInputVal] = useState(String(goal));
+
+  const commit = () => {
+    const n = parseInt(inputVal, 10);
+    if (!isNaN(n) && n > 0) onChange({ dailyWordGoal: n });
+    else setInputVal(String(goal));
+  };
+
+  const presets = [100, 250, 500, 750, 1000];
+
+  return (
+    <div>
+      <SectionTitle>Writing Goal</SectionTitle>
+      <SectionSubtitle>Set how many words you need to write each day to keep your streak alive.</SectionSubtitle>
+
+      <Label>Daily Word Goal</Label>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+        <input
+          type="number"
+          min="1"
+          value={inputVal}
+          onChange={e => setInputVal(e.target.value)}
+          onBlur={commit}
+          onKeyDown={e => e.key === 'Enter' && commit()}
+          style={{
+            width: '110px', padding: '10px 14px',
+            background: 'rgba(0,0,0,0.4)',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '8px', color: '#dcddde',
+            fontSize: '20px', fontWeight: 700,
+            outline: 'none',
+            transition: 'border-color 0.15s',
+          }}
+          onFocus={e => e.target.style.borderColor = accentHex}
+          onBlur2={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+        />
+        <span style={{ fontSize: '14px', color: '#72767d' }}>words per day</span>
+      </div>
+
+      {/* Quick presets */}
+      <Label>Quick Presets</Label>
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '28px' }}>
+        {presets.map(p => (
+          <button
+            key={p}
+            onClick={() => { onChange({ dailyWordGoal: p }); setInputVal(String(p)); }}
+            style={{
+              padding: '6px 16px', borderRadius: '20px',
+              border: `1.5px solid ${goal === p ? accentHex : 'rgba(255,255,255,0.12)'}`,
+              background: goal === p ? `${accentHex}20` : 'transparent',
+              color: goal === p ? accentHex : '#96989d',
+              cursor: 'pointer', fontSize: '13px', fontWeight: goal === p ? 600 : 400,
+              transition: 'all 0.15s',
+            }}
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+
+      <Divider />
+
+      {/* Context */}
+      <div style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '10px', padding: '14px 16px',
+      }}>
+        <div style={{ fontSize: '12px', color: '#72767d', lineHeight: 1.7 }}>
+          <div>📖 <strong style={{ color: '#b9bbbe' }}>100 words</strong> — A short journal entry</div>
+          <div>✍️ <strong style={{ color: '#b9bbbe' }}>300 words</strong> — A focused session</div>
+          <div>🔥 <strong style={{ color: '#b9bbbe' }}>500 words</strong> — NaNoWriMo pace</div>
+          <div>⚡ <strong style={{ color: '#b9bbbe' }}>1000 words</strong> — Serious daily output</div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '16px', fontSize: '12px', color: '#4f545c' }}>
+        Your streak data is saved inside each <code style={{ color: '#72767d' }}>.authbook</code> file and is unique per book.
+      </div>
+    </div>
+  );
+}
+
 function DataPanel({ settings, onChange, accentHex, onClearSessions }) {
   const [confirm, setConfirm] = useState(null);
 
@@ -510,6 +596,7 @@ export const DEFAULT_SETTINGS = {
   lightMode: false,
   startupBehavior: 'last',
   restoreOpenBooks: true,
+  dailyWordGoal: 300,
 };
 
 export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave, onClearSessions, onOpenCustomizer }) {
@@ -627,6 +714,7 @@ export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave,
 
           {activeSection === 'profile'    && <ProfilePanel    {...panelProps} />}
           {activeSection === 'appearance' && <AppearancePanel {...panelProps} onOpenCustomizer={onOpenCustomizer} />}
+          {activeSection === 'writing'    && <WritingGoalPanel {...panelProps} />}
           {activeSection === 'startup'    && <StartupPanel    {...panelProps} />}
           {activeSection === 'data'       && <DataPanel       {...panelProps} onClearSessions={onClearSessions} />}
         </div>
