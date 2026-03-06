@@ -21,29 +21,30 @@ function makeDateKey(year, month, day) {
 }
 
 /**
- * Log entry shape: { words: number, goal: number }
- *
- * Each day stores the goal that was active on that day so retroactive
- * goal changes never alter past results.
- *
- * Legacy support: if a day was saved as a plain number (old format),
- * it is treated as met (it was only saved on completion).
+ * Normalises the raw log so every entry is { words: number, goal: number }.
+ * Legacy entries (plain numbers) get assigned the streak-level goalWords as
+ * their goal so they display correctly without re-writing old data.
  */
-function getEntry(log, key) {
-  const e = log?.[key];
-  if (e == null) return null;
-  if (typeof e === 'number') return { words: e, goal: null }; // legacy
-  return e;
+function normalizeLog(rawLog, fallbackGoal) {
+  if (!rawLog) return {};
+  const result = {};
+  for (const [key, val] of Object.entries(rawLog)) {
+    if (typeof val === 'number') {
+      result[key] = { words: val, goal: fallbackGoal };
+    } else {
+      result[key] = val;
+    }
+  }
+  return result;
 }
 
 function isEntryMet(entry) {
   if (!entry) return false;
-  if (entry.goal === null) return true; // legacy entries count as met
   return entry.words >= entry.goal;
 }
 
 function isKeyMet(log, key) {
-  return isEntryMet(getEntry(log, key));
+  return isEntryMet(log[key] ?? null);
 }
 
 export function computeStreak(log) {
@@ -79,7 +80,10 @@ function DayTooltip({ entry, dayLabel, accentHex, cellRef }) {
     const tip  = tipRef.current.getBoundingClientRect();
     let left = cell.left + cell.width / 2 - tip.width / 2;
     left = Math.max(8, Math.min(left, window.innerWidth - tip.width - 8));
-    const top = cell.top - tip.height - 8;
+    // Show above the cell; if not enough room, show below
+    const top = cell.top - tip.height - 8 < 8
+      ? cell.bottom + 8
+      : cell.top - tip.height - 8;
     setPos({ top, left, ready: true });
   }, [cellRef]);
 
@@ -91,35 +95,51 @@ function DayTooltip({ entry, dayLabel, accentHex, cellRef }) {
     <div
       ref={tipRef}
       style={{
-        position:   'fixed',
-        top:        pos.top,
-        left:       pos.left,
-        zIndex:     10000,
-        opacity:    pos.ready ? 1 : 0,
+        position: 'fixed',
+        top:  pos.top,
+        left: pos.left,
+        zIndex: 10000,
+        opacity: pos.ready ? 1 : 0,
         background: '#1a1b1e',
-        border:     `1px solid ${met ? accentHex + '55' : 'rgba(255,255,255,0.1)'}`,
+        border: `1px solid ${met ? accentHex + '55' : 'rgba(255,255,255,0.12)'}`,
         borderRadius: '8px',
-        padding:    '7px 11px',
+        padding: '8px 12px',
         pointerEvents: 'none',
-        boxShadow:  '0 8px 24px rgba(0,0,0,0.7)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
         whiteSpace: 'nowrap',
         transition: 'opacity 0.08s ease',
       }}
     >
-      <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '4px' }}>{dayLabel}</div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      {/* Date label */}
+      <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '5px' }}>{dayLabel}</div>
+
+      {/* Words / goal row */}
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
         {met
-          ? <CheckCircle2 size={12} color={accentHex} />
-          : <XCircle      size={12} color="#4f545c"   />
+          ? <CheckCircle2 size={12} color={accentHex} style={{ flexShrink: 0, alignSelf: 'center' }} />
+          : <XCircle      size={12} color="#4f545c"   style={{ flexShrink: 0, alignSelf: 'center' }} />
         }
-        <span style={{ fontSize: '13px', fontWeight: 700, color: met ? accentHex : '#72767d' }}>
+
+        {/* Word count — large, colored */}
+        <span style={{
+          fontSize: '14px', fontWeight: 700,
+          color: met ? accentHex : '#72767d',
+        }}>
           {words.toLocaleString()}
         </span>
+
+        {/* Goal — smaller, subscript-style, grey */}
         {goal !== null && (
-          <span style={{ fontSize: '10px', fontWeight: 500, color: '#4f545c', lineHeight: 1, alignSelf: 'flex-end', marginBottom: '1px' }}>
+          <span style={{
+            fontSize: '10px', fontWeight: 500,
+            color: '#4f545c',
+            // sit lower to create a subscript feel
+            position: 'relative', top: '2px',
+          }}>
             /{goal.toLocaleString()}
           </span>
         )}
+
         <span style={{ fontSize: '11px', color: '#4f545c' }}>words</span>
       </div>
     </div>,
@@ -136,12 +156,12 @@ function CalendarCell({ day, cellIndex, daysInMonth, viewYear, viewMonth, log, a
   if (!day) return <div style={{ height: '34px' }} />;
 
   const key     = makeDateKey(viewYear, viewMonth, day);
-  const entry   = getEntry(log, key);
+  const entry   = log[key] ?? null;           // already normalised
   const met     = isEntryMet(entry);
   const isToday = key === todayKey;
-  const hasData = !!entry;
+  const hasData = entry !== null;             // true even for partial/unmet days
 
-  // Pill/circle calculation
+  // Pill / circle style
   const posInRow     = cellIndex % 7;
   const isFirstInRow = posInRow === 0;
   const isLastInRow  = posInRow === 6;
@@ -177,19 +197,20 @@ function CalendarCell({ day, cellIndex, daysInMonth, viewYear, viewMonth, log, a
       style={{
         height: '34px', position: 'relative',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        cursor: hasData ? 'default' : 'default',
         ...cellStyle,
       }}
     >
       <span style={{
         fontSize: '12px',
         fontWeight: isToday ? 700 : met ? 600 : 400,
-        color: met ? accentHex : isToday ? '#fff' : '#72767d',
+        color: met ? accentHex : isToday ? '#fff' : hasData ? '#96989d' : '#72767d',
         position: 'relative', zIndex: 1, lineHeight: 1,
       }}>
         {day}
       </span>
 
-      {/* Dot under today if goal not yet met */}
+      {/* Dot below today if goal not yet met */}
       {isToday && !met && (
         <div style={{
           position: 'absolute', bottom: '4px', left: '50%',
@@ -197,6 +218,22 @@ function CalendarCell({ day, cellIndex, daysInMonth, viewYear, viewMonth, log, a
           width: '3px', height: '3px', borderRadius: '50%',
           background: accentHex,
         }} />
+      )}
+
+      {/* Partial progress indicator — small bottom bar for unmet days with data */}
+      {hasData && !met && !isToday && entry.goal > 0 && (
+        <div style={{
+          position: 'absolute', bottom: '3px', left: '20%', right: '20%',
+          height: '2px', borderRadius: '1px',
+          background: 'rgba(255,255,255,0.08)',
+          overflow: 'hidden',
+        }}>
+          <div style={{
+            height: '100%', borderRadius: '1px',
+            background: accentHex + '60',
+            width: `${Math.min(100, (entry.words / entry.goal) * 100)}%`,
+          }} />
+        </div>
       )}
 
       {hovered && hasData && (
@@ -219,7 +256,7 @@ const MONTH_NAMES = [
   'July','August','September','October','November','December',
 ];
 
-function StreakCalendar({ currentStreak, log, todayWords, goalWords, accentHex, anchorRef, onClose }) {
+function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, anchorRef, onClose }) {
   const today = new Date();
   const [viewYear,  setViewYear]  = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -264,10 +301,9 @@ function StreakCalendar({ currentStreak, log, todayWords, goalWords, accentHex, 
   ];
   while (cells.length % 7 !== 0) cells.push(null);
 
-  const todayKey   = getTodayKey();
-  const todayEntry = getEntry(log, todayKey);
-  const todayMet   = isEntryMet(todayEntry);
-  // Show the goal stored for today if already logged, else the current setting
+  const todayKey    = getTodayKey();
+  const todayEntry  = log[todayKey] ?? null;
+  const todayMet    = wordsToday >= goalWords;
   const displayGoal = todayEntry?.goal ?? goalWords;
 
   const streakLabel =
@@ -297,7 +333,6 @@ function StreakCalendar({ currentStreak, log, todayWords, goalWords, accentHex, 
         .streak-nav-btn:hover { background: rgba(255,255,255,0.08) !important; color: #fff !important; }
       `}</style>
 
-      {/* Close */}
       <button
         onClick={onClose}
         style={{
@@ -323,18 +358,24 @@ function StreakCalendar({ currentStreak, log, todayWords, goalWords, accentHex, 
         </div>
         <div style={{ fontSize: '12px', color: '#72767d', marginBottom: '8px' }}>{streakLabel}</div>
 
-        {/* Today's progress bar */}
+        {/* Today's progress */}
         <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '8px', padding: '8px 12px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
             <span style={{ fontSize: '11px', color: '#72767d', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Today</span>
-            <span style={{ fontSize: '11px', fontWeight: 600, color: todayMet ? accentHex : '#72767d' }}>
-              {todayWords.toLocaleString()} / {displayGoal.toLocaleString()} words
+            <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: todayMet ? accentHex : '#72767d' }}>
+                {wordsToday.toLocaleString()}
+              </span>
+              <span style={{ fontSize: '10px', color: '#4f545c', position: 'relative', top: '1px' }}>
+                /{displayGoal.toLocaleString()}
+              </span>
+              <span style={{ fontSize: '11px', color: '#4f545c' }}>words</span>
             </span>
           </div>
           <div style={{ height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
             <div style={{
               height: '100%', borderRadius: '2px', background: accentHex,
-              width: `${Math.min(100, (todayWords / displayGoal) * 100)}%`,
+              width: `${Math.min(100, (wordsToday / displayGoal) * 100)}%`,
               transition: 'width 0.4s ease',
             }} />
           </div>
@@ -357,9 +398,7 @@ function StreakCalendar({ currentStreak, log, todayWords, goalWords, accentHex, 
       {/* Day headers */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '2px' }}>
         {DAY_LABELS.map(d => (
-          <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 700, color: '#4f545c', padding: '2px 0' }}>
-            {d}
-          </div>
+          <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 700, color: '#4f545c', padding: '2px 0' }}>{d}</div>
         ))}
       </div>
 
@@ -401,33 +440,77 @@ function StreakCalendar({ currentStreak, log, todayWords, goalWords, accentHex, 
 export function FlameButton({ current, accentHex = '#3b82f6', goalWords = 300, onStreakUpdate }) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [shaking, setShaking]           = useState(false);
-  const buttonRef = useRef(null);
+  const buttonRef     = useRef(null);
+  // High-water-mark: tracks the highest word count reached today in this session.
+  // Stored in a ref so it doesn't trigger re-renders on every keystroke.
+  // Reset whenever the active book changes.
+  const hwRef         = useRef(0);
+  const baselineSetRef = useRef(null); // tracks "bookId:dateKey" to avoid re-setting
 
   const streak     = current?.streak ?? {};
-  const log        = streak.log      ?? {};
-  const todayKey   = getTodayKey();
-  const todayWords = countWords(current?.content ?? '');
-  const todayMet   = todayWords >= goalWords;
+  const rawLog     = streak.log       ?? {};
+  // Normalise: convert any legacy plain-number entries to { words, goal } using
+  // the streak-level goalWords field that old versions stored at the top level.
+  const legacyGoal = streak.goalWords ?? goalWords;
+  const log        = normalizeLog(rawLog, legacyGoal);
+
+  const todayKey     = getTodayKey();
+  const currentWords = countWords(current?.content ?? '');
+
+  // Keep HWM up to date on every render (cheap ref assignment, no state)
+  if (currentWords > hwRef.current) hwRef.current = currentWords;
+
+  // ── Set daily baseline once per book per day ──────────────────────────────
+  // The baseline is the document word count when the user first opens the book
+  // on a given day. It is stored in the .authbook file so it survives restarts.
+  // wordsToday = hwRef - baseline  → counts only NEW words, ignores deletions.
+  useEffect(() => {
+    if (!current) return;
+    const key = `${current.id}:${todayKey}`;
+    if (baselineSetRef.current === key) return;         // already handled this book+day
+    baselineSetRef.current = key;
+
+    const existing = current.streak?.dailyBaseline?.[todayKey];
+    if (existing !== undefined) return;                  // already stored in file
+
+    // First time opening this book today — snapshot the current word count
+    const wc = countWords(current.content ?? '');
+    hwRef.current = wc; // HWM starts at baseline
+    onStreakUpdate?.({
+      ...streak,
+      dailyBaseline: { ...(streak.dailyBaseline ?? {}), [todayKey]: wc },
+    });
+  }, [current?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Reset HWM when switching books so we don't carry over counts from the previous book
+  useEffect(() => {
+    hwRef.current = countWords(current?.content ?? '');
+  }, [current?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const baseline   = streak.dailyBaseline?.[todayKey] ?? currentWords;
+  const wordsToday = Math.max(0, hwRef.current - baseline);
+  const todayMet   = wordsToday >= goalWords;
   const currentStreak = computeStreak(log);
 
   const handleClick = () => {
     if (!current) return;
 
-    if (todayMet) {
-      const existing   = getEntry(log, todayKey);
-      const needsWrite = !existing || existing.words !== todayWords || existing.goal !== goalWords;
+    // Always record today's progress (even if goal not met) so partial days
+    // appear in the calendar with a tooltip showing how close they were.
+    const existing    = log[todayKey] ?? null;
+    const needsWrite  = !existing
+      || existing.words !== wordsToday
+      || existing.goal  !== goalWords;
 
-      if (needsWrite) {
-        // Freeze today's goal alongside today's word count
-        const updatedLog    = { ...log, [todayKey]: { words: todayWords, goal: goalWords } };
-        const updatedStreak = { ...streak, log: updatedLog };
-        onStreakUpdate?.(updatedStreak);
+    if (needsWrite) {
+      const updatedLog    = { ...rawLog, [todayKey]: { words: wordsToday, goal: goalWords } };
+      const updatedStreak = { ...streak, log: updatedLog };
+      onStreakUpdate?.(updatedStreak);
 
-        // Shake on first completion of the day
-        if (!isEntryMet(existing)) {
-          setShaking(true);
-          setTimeout(() => setShaking(false), 600);
-        }
+      // Shake the flame on first completion of the day
+      if (todayMet && !isEntryMet(existing)) {
+        setShaking(true);
+        setTimeout(() => setShaking(false), 600);
       }
     }
 
@@ -453,7 +536,7 @@ export function FlameButton({ current, accentHex = '#3b82f6', goalWords = 300, o
         title={
           !current
             ? 'Open a book to track your streak'
-            : `${todayWords.toLocaleString()} / ${goalWords.toLocaleString()} words today${todayMet ? ' ✓' : ''}`
+            : `${wordsToday.toLocaleString()} / ${goalWords.toLocaleString()} words written today${todayMet ? ' ✓' : ''}`
         }
         style={{
           padding: '8px',
@@ -492,7 +575,7 @@ export function FlameButton({ current, accentHex = '#3b82f6', goalWords = 300, o
         <StreakCalendar
           currentStreak={currentStreak}
           log={log}
-          todayWords={todayWords}
+          wordsToday={wordsToday}
           goalWords={goalWords}
           accentHex={accentHex}
           anchorRef={buttonRef}

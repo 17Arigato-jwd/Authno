@@ -216,9 +216,15 @@ export default function App() {
   };
 
   // Update streak data inside the current session (saved to .authbook on next manual save)
+  // Uses deep merge so separate baseline and log writes don't clobber each other
   const handleStreakUpdate = useCallback((updatedStreak) => {
     setSessions(prev => prev.map(s =>
-      s.id === currentId ? { ...s, streak: updatedStreak } : s
+      s.id === currentId
+        ? { ...s, streak: { ...(s.streak ?? {}), ...updatedStreak,
+            log:          { ...(s.streak?.log ?? {}),          ...(updatedStreak.log ?? {}) },
+            dailyBaseline:{ ...(s.streak?.dailyBaseline ?? {}), ...(updatedStreak.dailyBaseline ?? {}) },
+          }}
+        : s
     ));
   }, [currentId]);
 
