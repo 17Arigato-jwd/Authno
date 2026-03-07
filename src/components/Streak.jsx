@@ -480,25 +480,27 @@ export function FlameButton({ current, accentHex = '#3b82f6', goalWords = 300, o
       ...streak,
       dailyBaseline: { ...(streak.dailyBaseline ?? {}), [todayKey]: wc },
     });
-  }, [current?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [current?.id, todayKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Reset HWM when switching books so we don't carry over counts from the previous book
   useEffect(() => {
     hwRef.current = countWords(current?.content ?? '');
-  }, [current?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [current?.id, todayKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const baseline   = streak.dailyBaseline?.[todayKey] ?? currentWords;
   const wordsToday = Math.max(0, hwRef.current - baseline);
   const todayMet   = wordsToday >= goalWords;
   const currentStreak = computeStreak(log);
 
-  const handleClick = () => {
+  // ── Auto-persist today's entry whenever wordsToday or goalWords changes ─────
+  // This runs on every content-driven re-render, but the needsWrite guard makes
+  // it a no-op unless something actually changed. The streak is therefore always
+  // up to date even if the user never opens the calendar.
+  const prevMetRef = useRef(false);
+  useEffect(() => {
     if (!current) return;
-
-    // Always record today's progress (even if goal not met) so partial days
-    // appear in the calendar with a tooltip showing how close they were.
-    const existing    = log[todayKey] ?? null;
-    const needsWrite  = !existing
+    const existing   = log[todayKey] ?? null;
+    const needsWrite = !existing
       || existing.words !== wordsToday
       || existing.goal  !== goalWords;
 
@@ -506,14 +508,19 @@ export function FlameButton({ current, accentHex = '#3b82f6', goalWords = 300, o
       const updatedLog    = { ...rawLog, [todayKey]: { words: wordsToday, goal: goalWords } };
       const updatedStreak = { ...streak, log: updatedLog };
       onStreakUpdate?.(updatedStreak);
-
-      // Shake the flame on first completion of the day
-      if (todayMet && !isEntryMet(existing)) {
-        setShaking(true);
-        setTimeout(() => setShaking(false), 600);
-      }
     }
 
+    // Shake the flame the moment the goal is first crossed
+    const justMet = todayMet && !prevMetRef.current;
+    prevMetRef.current = todayMet;
+    if (justMet) {
+      setShaking(true);
+      setTimeout(() => setShaking(false), 600);
+    }
+  }, [wordsToday, goalWords, todayKey, current?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleClick = () => {
+    if (!current) return;
     setCalendarOpen(v => !v);
   };
 

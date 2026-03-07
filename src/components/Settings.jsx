@@ -596,7 +596,7 @@ export const DEFAULT_SETTINGS = {
   lightMode: false,
   startupBehavior: 'last',
   restoreOpenBooks: true,
-  dailyWordGoal: 300,
+  dailyWordGoal: 500,
 };
 
 export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave, onClearSessions, onOpenCustomizer }) {
