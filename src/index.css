@@ -135,9 +135,9 @@ textarea {
 .light-mode .bg-black\/70                       { background-color: rgba(0,0,0,0.35) !important; }
 .light-mode .shadow-inner                       { box-shadow: inset 0 2px 4px rgba(0,0,0,0.06) !important; }
 /* Hardcoded dark bg classes */
-.light-mode .bg-\[#060606\]                     { background-color: var(--c-bg-header) !important; }
-.light-mode .bg-\[#0b0b0c\]                     { background-color: var(--c-bg-surface) !important; }
-.light-mode .bg-\[#0f0f10\]                     { background-color: var(--c-bg-editor) !important; }
-.light-mode .bg-\[#101010\]                     { background-color: var(--c-bg-raised) !important; }
+.light-mode .bg-\[\#060606\]                     { background-color: var(--c-bg-header) !important; }
+.light-mode .bg-\[\#0b0b0c\]                     { background-color: var(--c-bg-surface) !important; }
+.light-mode .bg-\[\#0f0f10\]                     { background-color: var(--c-bg-editor) !important; }
+.light-mode .bg-\[\#101010\]                     { background-color: var(--c-bg-raised) !important; }
 /* EditorToolbar ring */
 .light-mode .ring-white\/70                     { --tw-ring-color: rgba(0,0,0,0.2) !important; }

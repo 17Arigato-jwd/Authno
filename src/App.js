@@ -90,13 +90,17 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, 
 
   return (
     <div className="flex-1 flex flex-col min-w-0 relative">
-      <header className="flex items-center justify-between px-4 py-3 bg-[#060606] border-b border-white/10">
+      <header
+        className="flex items-center justify-between px-4 py-3 border-b"
+        style={{ background: 'var(--c-bg-header)', borderColor: 'var(--c-border-2)' }}
+      >
         <div className="flex items-center gap-3">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onBlur={() => onEditTitle(title)}
-            className="bg-transparent text-white text-lg font-semibold focus:outline-none border-b border-transparent focus:border-white/20"
+            className="bg-transparent text-lg font-semibold focus:outline-none border-b border-transparent"
+            style={{ color: 'var(--c-text-1)' }}
             placeholder="Untitled"
           />
         </div>
@@ -110,9 +114,10 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, 
           />
           <button
             onClick={onToggleMenu}
-            className="p-2 border-2 border-white rounded-md hover:bg-white/5 transition"
+            className="p-2 border-2 rounded-md transition"
+            style={{ borderColor: 'var(--c-border-3)', color: 'var(--c-text-1)' }}
           >
-            <BurgerIcon className="text-white" />
+            <BurgerIcon />
           </button>
         </div>
       </header>
@@ -128,13 +133,17 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, 
               ref={editorRef}
               contentEditable
               suppressContentEditableWarning
-              className="w-full min-h-[400px] bg-[#0f0f10] text-white p-4 rounded-lg shadow-inner focus:outline-none overflow-auto mt-20 leading-relaxed"
-              style={typewriterMode ? { paddingBottom: "50vh" } : {}}
+              className="w-full min-h-[400px] p-4 rounded-lg shadow-inner focus:outline-none overflow-auto mt-20 leading-relaxed"
+              style={{
+                background: 'var(--c-bg-editor)',
+                color: 'var(--c-text-1)',
+                ...(typewriterMode ? { paddingBottom: "50vh" } : {}),
+              }}
               onInput={handleInput}
             />
           </>
         ) : (
-          <div className="text-white/40 text-center mt-20">
+          <div className="text-center mt-20" style={{ color: 'var(--c-text-5)' }}>
             Select or create a session to begin.
           </div>
         )}
@@ -327,11 +336,13 @@ export default function App() {
   const current = sessions.find((s) => s.id === currentId) || null;
 
   return (
-    <div className="h-screen flex text-white relative">
+    <div className="h-screen flex relative" style={{ color: 'var(--c-text-1)' }}>
       <Background
         accentHex={customization.accentHex}
-        backgroundOpacity={customization.backgroundOpacity}
-        colorRange={{ from: customization.gradient.colorFrom, to: customization.gradient.colorTo }}
+        backgroundOpacity={settings.lightMode ? Math.min(customization.backgroundOpacity * 0.3, 0.18) : customization.backgroundOpacity}
+        colorRange={settings.lightMode
+          ? { from: customization.accentHex, to: '#888888' }
+          : { from: customization.gradient.colorFrom, to: customization.gradient.colorTo }}
         minBlobs={customization.gradient.blobCountMin}
         maxBlobs={customization.gradient.blobCountMax}
         blobSizeRange={{ min: customization.gradient.blobSizeMin, max: customization.gradient.blobSizeMax }}
@@ -403,8 +414,8 @@ export default function App() {
         const words = countWords(current.content ?? '');
         const chars = (current.content ?? '').replace(/<[^>]*>/g, '').replace(/&[a-z]+;/gi, ' ').length;
         return (
-          <div className="fixed bottom-4 left-4 flex items-center gap-2 text-white/40 text-sm select-none pointer-events-none"
-               style={{ zIndex: 50 }}>
+          <div className="fixed bottom-4 left-4 flex items-center gap-2 text-sm select-none pointer-events-none"
+               style={{ zIndex: 50, color: 'var(--c-text-5)' }}>
             <span>{words.toLocaleString()} {words === 1 ? 'word' : 'words'}</span>
             <span className="opacity-30">·</span>
             <span>{chars.toLocaleString()} {chars === 1 ? 'char' : 'chars'}</span>
@@ -412,7 +423,8 @@ export default function App() {
         );
       })()}
       {/* Autosave indicator */}
-      <div className="fixed bottom-4 right-4 flex items-center gap-3 text-white/40 text-sm select-none">
+      <div className="fixed bottom-4 right-4 flex items-center gap-3 text-sm select-none"
+           style={{ color: 'var(--c-text-5)' }}>
         {lastSaved && (
           <span className="transition-opacity duration-500 opacity-80">
             Saved ✓ ({lastSaved})
@@ -420,9 +432,10 @@ export default function App() {
         )}
         <button
           onClick={() => window.location.reload()}
-          className={`p-2 rounded-full border border-white/20 hover:border-white/40 transition ${
+          className={`p-2 rounded-full transition ${
             inactive ? "opacity-70 hover:opacity-100" : "opacity-30"
           }`}
+          style={{ border: '1px solid var(--c-border-3)' }}
           title="Reload from localStorage"
         >
           <RotateCw className="w-4 h-4" />
