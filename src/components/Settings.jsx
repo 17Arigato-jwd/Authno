@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   X, User, Palette, Database, BookOpen,
   Camera, Check, Trash2, RefreshCw, AlertTriangle,
-  BookMarked, FilePlus, ChevronRight, Zap, Sliders, Sun, Target,
+  BookMarked, FilePlus, ChevronRight, Zap, Sliders, Sun, Target, AlignCenter,
 } from 'lucide-react';
 import { buildPalette } from './Background';
 import { ColorPicker } from './ColorPicker';
@@ -30,24 +30,24 @@ const NAV_ITEMS = [
 
 function SectionTitle({ children }) {
   return (
-    <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#ffffff', marginBottom: '4px', letterSpacing: '-0.3px' }}>
+    <h2 style={{ fontSize: '20px', fontWeight: 700, color: 'var(--c-text-1)', marginBottom: '4px', letterSpacing: '-0.3px' }}>
       {children}
     </h2>
   );
 }
 
 function SectionSubtitle({ children }) {
-  return <p style={{ fontSize: '13px', color: '#72767d', marginBottom: '24px' }}>{children}</p>;
+  return <p style={{ fontSize: '13px', color: 'var(--c-text-5)', marginBottom: '24px' }}>{children}</p>;
 }
 
 function Divider() {
-  return <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '24px 0' }} />;
+  return <div style={{ height: '1px', background: 'var(--c-border-1)', margin: '24px 0' }} />;
 }
 
 function Label({ children }) {
   return (
     <div style={{
-      fontSize: '11px', fontWeight: 700, color: '#b9bbbe',
+      fontSize: '11px', fontWeight: 700, color: 'var(--c-text-3)',
       textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '8px',
     }}>
       {children}
@@ -82,7 +82,7 @@ function SettingRow({ icon: Icon, title, description, children, accentHex }) {
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       padding: '12px 16px', borderRadius: '8px',
-      background: 'rgba(255,255,255,0.03)',
+      background: 'var(--c-bg-row)',
       border: '1px solid rgba(255,255,255,0.06)',
       gap: '12px',
     }}>
@@ -97,8 +97,8 @@ function SettingRow({ icon: Icon, title, description, children, accentHex }) {
           </div>
         )}
         <div>
-          <div style={{ fontSize: '14px', fontWeight: 500, color: '#dcddde' }}>{title}</div>
-          {description && <div style={{ fontSize: '12px', color: '#72767d', marginTop: '2px' }}>{description}</div>}
+          <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text-2)' }}>{title}</div>
+          {description && <div style={{ fontSize: '12px', color: 'var(--c-text-5)', marginTop: '2px' }}>{description}</div>}
         </div>
       </div>
       <div style={{ flexShrink: 0 }}>{children}</div>
@@ -114,26 +114,26 @@ function ConfirmModal({ title, message, type, onConfirm, onCancel }) {
       background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
     }}>
       <div style={{
-        background: '#1a1b1e',
+        background: 'var(--c-bg-modal)',
         border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: '16px', padding: '28px', maxWidth: '420px', width: '90%',
         boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
           <AlertTriangle size={20} color={type === 'danger' ? '#ed4245' : '#faa61a'} />
-          <span style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>{title}</span>
+          <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--c-text-1)' }}>{title}</span>
         </div>
-        <p style={{ fontSize: '14px', color: '#b9bbbe', lineHeight: 1.5, marginBottom: '24px' }}>{message}</p>
+        <p style={{ fontSize: '14px', color: 'var(--c-text-3)', lineHeight: 1.5, marginBottom: '24px' }}>{message}</p>
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
           <button onClick={onCancel} style={{
             padding: '8px 20px', borderRadius: '8px', border: 'none',
-            background: 'rgba(255,255,255,0.1)', color: '#dcddde',
+            background: 'var(--c-border-2)', color: 'var(--c-text-2)',
             cursor: 'pointer', fontSize: '14px', fontWeight: 500,
           }}>Cancel</button>
           <button onClick={onConfirm} style={{
             padding: '8px 20px', borderRadius: '8px', border: 'none',
             background: type === 'danger' ? '#ed4245' : '#faa61a',
-            color: '#fff', cursor: 'pointer', fontSize: '14px', fontWeight: 700,
+            color: 'var(--c-text-1)', cursor: 'pointer', fontSize: '14px', fontWeight: 700,
           }}>Confirm</button>
         </div>
       </div>
@@ -165,7 +165,7 @@ function ProfilePanel({ settings, onChange, accentHex }) {
           <div style={{
             width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden',
             border: `3px solid ${accentHex}`,
-            background: 'linear-gradient(135deg, #4f545c, #36393f)',
+            background: 'linear-gradient(135deg, var(--c-avatar-start), var(--c-avatar-end))',
           }}>
             {settings.avatarDataUrl ? (
               <img src={settings.avatarDataUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -189,10 +189,10 @@ function ProfilePanel({ settings, onChange, accentHex }) {
           <input ref={fileRef} type="file" accept="image/*" onChange={handleAvatarFile} style={{ display: 'none' }} />
         </div>
         <div>
-          <div style={{ fontSize: '18px', fontWeight: 700, color: '#fff' }}>
+          <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--c-text-1)' }}>
             {settings.displayName || 'Anonymous'}
           </div>
-          <div style={{ fontSize: '12px', color: '#72767d', marginTop: '2px' }}>
+          <div style={{ fontSize: '12px', color: 'var(--c-text-5)', marginTop: '2px' }}>
             Click the camera to update your avatar
           </div>
         </div>
@@ -205,12 +205,12 @@ function ProfilePanel({ settings, onChange, accentHex }) {
         placeholder="Your name"
         style={{
           width: '100%', padding: '10px 14px',
-          background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '8px', color: '#dcddde', fontSize: '14px',
+          background: 'var(--c-bg-input)', border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: '8px', color: 'var(--c-text-2)', fontSize: '14px',
           outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.15s',
         }}
         onFocus={e => e.target.style.borderColor = accentHex}
-        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+        onBlur={e => e.target.style.borderColor = 'var(--c-border-2)'}
       />
 
       {settings.avatarDataUrl && (
@@ -354,21 +354,21 @@ function StartupPanel({ settings, onChange, accentHex }) {
               style={{
                 display: 'flex', alignItems: 'center', gap: '14px',
                 padding: '14px 16px', borderRadius: '10px',
-                border: `1px solid ${selected ? accentHex + '80' : 'rgba(255,255,255,0.06)'}`,
+                border: `1px solid ${selected ? accentHex + '80' : 'var(--c-border-1)'}`,
                 background: selected ? `${accentHex}14` : 'rgba(255,255,255,0.02)',
                 cursor: 'pointer', transition: 'all 0.15s ease',
               }}
             >
               <div style={{
                 width: '36px', height: '36px', borderRadius: '10px',
-                background: selected ? `${accentHex}30` : 'rgba(255,255,255,0.06)',
+                background: selected ? `${accentHex}30` : 'var(--c-border-1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
                 <opt.icon size={17} color={selected ? accentHex : '#72767d'} />
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '14px', fontWeight: 500, color: selected ? '#fff' : '#dcddde' }}>{opt.title}</div>
-                <div style={{ fontSize: '12px', color: '#72767d', marginTop: '2px' }}>{opt.description}</div>
+                <div style={{ fontSize: '14px', fontWeight: 500, color: selected ? 'var(--c-text-1)' : 'var(--c-text-2)' }}>{opt.title}</div>
+                <div style={{ fontSize: '12px', color: 'var(--c-text-5)', marginTop: '2px' }}>{opt.description}</div>
               </div>
               <div style={{
                 width: '18px', height: '18px', borderRadius: '50%',
@@ -433,17 +433,17 @@ function WritingGoalPanel({ settings, onChange, accentHex }) {
           onKeyDown={e => e.key === 'Enter' && commit()}
           style={{
             width: '110px', padding: '10px 14px',
-            background: 'rgba(0,0,0,0.4)',
+            background: 'var(--c-bg-input)',
             border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '8px', color: '#dcddde',
+            borderRadius: '8px', color: 'var(--c-text-2)',
             fontSize: '20px', fontWeight: 700,
             outline: 'none',
             transition: 'border-color 0.15s',
           }}
           onFocus={e => e.target.style.borderColor = accentHex}
-          onBlur2={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+          onBlur2={e => e.target.style.borderColor = 'var(--c-border-2)'}
         />
-        <span style={{ fontSize: '14px', color: '#72767d' }}>words per day</span>
+        <span style={{ fontSize: '14px', color: 'var(--c-text-5)' }}>words per day</span>
       </div>
 
       {/* Quick presets */}
@@ -455,9 +455,9 @@ function WritingGoalPanel({ settings, onChange, accentHex }) {
             onClick={() => { onChange({ dailyWordGoal: p }); setInputVal(String(p)); }}
             style={{
               padding: '6px 16px', borderRadius: '20px',
-              border: `1.5px solid ${goal === p ? accentHex : 'rgba(255,255,255,0.12)'}`,
+              border: `1.5px solid ${goal === p ? accentHex : 'var(--c-border-3)'}`,
               background: goal === p ? `${accentHex}20` : 'transparent',
-              color: goal === p ? accentHex : '#96989d',
+              color: goal === p ? accentHex : 'var(--c-text-4)',
               cursor: 'pointer', fontSize: '13px', fontWeight: goal === p ? 600 : 400,
               transition: 'all 0.15s',
             }}
@@ -471,20 +471,39 @@ function WritingGoalPanel({ settings, onChange, accentHex }) {
 
       {/* Context */}
       <div style={{
-        background: 'rgba(255,255,255,0.03)',
+        background: 'var(--c-bg-row)',
         border: '1px solid rgba(255,255,255,0.06)',
         borderRadius: '10px', padding: '14px 16px',
       }}>
-        <div style={{ fontSize: '12px', color: '#72767d', lineHeight: 1.7 }}>
-          <div>📖 <strong style={{ color: '#b9bbbe' }}>150 words</strong> — A short journal entry</div>
-          <div>✍️ <strong style={{ color: '#b9bbbe' }}>500 words</strong> — A focused session</div>
-          <div>🔥 <strong style={{ color: '#b9bbbe' }}>1000 words</strong> — A strong daily output</div>
-          <div>⚡ <strong style={{ color: '#b9bbbe' }}>1500 words</strong> — An Average Webnovel Chapter</div>
+        <div style={{ fontSize: '12px', color: 'var(--c-text-5)', lineHeight: 1.7 }}>
+          <div>📖 <strong style={{ color: 'var(--c-text-3)' }}>150 words</strong> — A short journal entry</div>
+          <div>✍️ <strong style={{ color: 'var(--c-text-3)' }}>500 words</strong> — A focused session</div>
+          <div>🔥 <strong style={{ color: 'var(--c-text-3)' }}>1000 words</strong> — A strong daily output</div>
+          <div>⚡ <strong style={{ color: 'var(--c-text-3)' }}>1500 words</strong> — An Average Webnovel Chapter</div>
         </div>
       </div>
 
-      <div style={{ marginTop: '16px', fontSize: '12px', color: '#4f545c' }}>
-        Your streak data is saved inside each <code style={{ color: '#72767d' }}>.authbook</code> file and is unique per book.
+      <div style={{ marginTop: '16px', fontSize: '12px', color: 'var(--c-text-6)' }}>
+        Your streak data is saved inside each <code style={{ color: 'var(--c-text-5)' }}>.authbook</code> file and is unique per book.
+      </div>
+
+      <Divider />
+
+      {/* ── Editor Behaviour ── */}
+      <Label>Editor Behaviour</Label>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <SettingRow
+          icon={AlignCenter}
+          title="Typewriter scroll"
+          description="Keep the active line centred vertically as you write"
+          accentHex={accentHex}
+        >
+          <Toggle
+            checked={settings.typewriterMode ?? false}
+            onChange={(v) => onChange({ typewriterMode: v })}
+            accentHex={accentHex}
+          />
+        </SettingRow>
       </div>
     </div>
   );
@@ -554,8 +573,8 @@ function DataPanel({ settings, onChange, accentHex, onClearSessions }) {
                 <action.icon size={15} color={action.color} />
               </div>
               <div>
-                <div style={{ fontSize: '14px', fontWeight: 500, color: '#dcddde' }}>{action.label}</div>
-                <div style={{ fontSize: '12px', color: '#72767d', marginTop: '2px' }}>{action.description}</div>
+                <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--c-text-2)' }}>{action.label}</div>
+                <div style={{ fontSize: '12px', color: 'var(--c-text-5)', marginTop: '2px' }}>{action.description}</div>
               </div>
             </div>
             <button
@@ -597,6 +616,7 @@ export const DEFAULT_SETTINGS = {
   startupBehavior: 'last',
   restoreOpenBooks: true,
   dailyWordGoal: 500,
+  typewriterMode: false,
 };
 
 export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave, onClearSessions, onOpenCustomizer }) {
@@ -632,14 +652,14 @@ export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave,
       <style>{`
         @keyframes settingsFadeIn  { from { opacity: 0; } to { opacity: 1; } }
         @keyframes settingsPanelIn { from { opacity: 0; transform: scale(0.97) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        .settings-nav-item:hover { background: rgba(255,255,255,0.05) !important; color: #dcddde !important; }
+        .settings-nav-item:hover { background: var(--c-bg-hover) !important; color: var(--c-text-2) !important; }
       `}</style>
 
       <div style={{
         width: '90vw', maxWidth: '860px',
         height: '80vh', maxHeight: '680px',
         display: 'flex', borderRadius: '16px', overflow: 'hidden',
-        background: '#1a1b1e',                               /* ← darkened from #2b2d31 */
+        background: 'var(--c-bg-modal)',                               /* ← darkened from #2b2d31 */
         border: '1px solid rgba(255,255,255,0.07)',
         boxShadow: '0 32px 80px rgba(0,0,0,0.7)',
         animation: 'settingsPanelIn 0.2s ease',
@@ -648,7 +668,7 @@ export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave,
         {/* ── Left Nav ── */}
         <div style={{
           width: '220px', flexShrink: 0,
-          background: '#111214',                             /* ← darkened from #1e1f22 */
+          background: 'var(--c-bg-nav)',                             /* ← darkened from #1e1f22 */
           padding: '16px 8px',
           display: 'flex', flexDirection: 'column',
           borderRight: '1px solid rgba(255,255,255,0.05)',
@@ -657,7 +677,7 @@ export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave,
           {groups.map(group => (
             <div key={group} style={{ marginBottom: '16px' }}>
               <div style={{
-                fontSize: '11px', fontWeight: 700, color: '#72767d',
+                fontSize: '11px', fontWeight: 700, color: 'var(--c-text-5)',
                 textTransform: 'uppercase', letterSpacing: '0.8px',
                 padding: '4px 10px', marginBottom: '4px',
               }}>
@@ -674,7 +694,7 @@ export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave,
                       width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
                       padding: '8px 10px', borderRadius: '6px', border: 'none',
                       background: active ? `${accentHex}22` : 'transparent',
-                      color: active ? '#fff' : '#96989d',
+                      color: active ? 'var(--c-text-1)' : 'var(--c-text-4)',
                       cursor: 'pointer', fontSize: '14px', fontWeight: active ? 600 : 400,
                       textAlign: 'left', transition: 'all 0.1s ease',
                     }}
@@ -690,7 +710,7 @@ export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave,
             </div>
           ))}
 
-          <div style={{ marginTop: 'auto', padding: '8px 10px', fontSize: '11px', color: '#4f545c' }}>
+          <div style={{ marginTop: 'auto', padding: '8px 10px', fontSize: '11px', color: 'var(--c-text-6)' }}>
             Settings v1.0
           </div>
         </div>
@@ -702,12 +722,12 @@ export function Settings({ isOpen, onClose, settings = DEFAULT_SETTINGS, onSave,
             style={{
               position: 'absolute', top: '16px', right: '16px',
               width: '32px', height: '32px', borderRadius: '50%',
-              background: 'rgba(255,255,255,0.06)', border: 'none',
+              background: 'var(--c-border-1)', border: 'none',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              cursor: 'pointer', color: '#72767d', transition: 'all 0.15s',
+              cursor: 'pointer', color: 'var(--c-text-5)', transition: 'all 0.15s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = '#fff'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#72767d'; }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-border-3)'; e.currentTarget.style.color = '#fff'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-border-1)'; e.currentTarget.style.color = 'var(--c-text-5)'; }}
           >
             <X size={16} />
           </button>

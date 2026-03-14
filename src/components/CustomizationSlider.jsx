@@ -352,7 +352,7 @@ export function CustomizationSlider({ isOpen, onClose, customization = DEFAULT_C
         width: '90vw', maxWidth: '820px',
         height: '80vh', maxHeight: '640px',
         display: 'flex', borderRadius: '16px', overflow: 'hidden',
-        background: '#2b2d31',
+        background: 'var(--c-bg-modal)',
         border: '1px solid rgba(255,255,255,0.08)',
         boxShadow: `0 32px 80px rgba(0,0,0,0.6), 0 0 80px ${accentHex}18`,
         animation: 'csPanelIn 0.2s ease',
@@ -361,7 +361,7 @@ export function CustomizationSlider({ isOpen, onClose, customization = DEFAULT_C
         {/* ── Left nav ── */}
         <div style={{
           width: '210px', flexShrink: 0,
-          background: '#1e1f22',
+          background: 'var(--c-bg-nav)',
           padding: '16px 8px',
           display: 'flex', flexDirection: 'column',
           borderRight: '1px solid rgba(255,255,255,0.06)',

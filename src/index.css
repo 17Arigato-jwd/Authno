@@ -47,3 +47,97 @@ textarea {
   animation: wiggle 1.8s infinite ease-in-out;
   transform-origin: center;
 }
+
+
+/* ── Theme colour variables ─────────────────────────────────────────────── */
+:root {
+  /* Structural backgrounds */
+  --c-bg-app:     #0a0a0a;
+  --c-bg-header:  #060606;
+  --c-bg-surface: #0b0b0c;
+  --c-bg-editor:  #0f0f10;
+  --c-bg-raised:  #101010;
+  --c-bg-modal:   #1a1b1e;
+  --c-bg-nav:     #111214;
+  --c-bg-card:    #1f1f1f;
+  --c-bg-card2:   #050505;
+  /* Row / input backgrounds */
+  --c-bg-row:     rgba(255,255,255,0.03);
+  --c-bg-hover:   rgba(255,255,255,0.05);
+  --c-bg-hover2:  rgba(255,255,255,0.08);
+  --c-bg-input:   rgba(0,0,0,0.4);
+  /* Text hierarchy */
+  --c-text-1:  #ffffff;
+  --c-text-2:  #dcddde;
+  --c-text-3:  #b9bbbe;
+  --c-text-4:  #96989d;
+  --c-text-5:  #72767d;
+  --c-text-6:  #4f545c;
+  /* Borders */
+  --c-border-1: rgba(255,255,255,0.06);
+  --c-border-2: rgba(255,255,255,0.1);
+  --c-border-3: rgba(255,255,255,0.2);
+  /* Avatar gradient stops */
+  --c-avatar-start: #4f545c;
+  --c-avatar-end:   #36393f;
+  /* Sessions list gradient */
+  --c-sessions-start: #1f1f1f;
+  --c-sessions-end:   #050505;
+}
+
+.light-mode {
+  --c-bg-app:     #f5f5f5;
+  --c-bg-header:  #e8e8e8;
+  --c-bg-surface: #eeeeee;
+  --c-bg-editor:  #ffffff;
+  --c-bg-raised:  #f8f8f8;
+  --c-bg-modal:   #ffffff;
+  --c-bg-nav:     #f0f0f0;
+  --c-bg-card:    #f0f0f0;
+  --c-bg-card2:   #e4e4e4;
+  --c-bg-row:     rgba(0,0,0,0.03);
+  --c-bg-hover:   rgba(0,0,0,0.04);
+  --c-bg-hover2:  rgba(0,0,0,0.06);
+  --c-bg-input:   rgba(0,0,0,0.06);
+  --c-text-1:  #1a1a1a;
+  --c-text-2:  #444444;
+  --c-text-3:  #666666;
+  --c-text-4:  #888888;
+  --c-text-5:  #aaaaaa;
+  --c-text-6:  #cccccc;
+  --c-border-1: rgba(0,0,0,0.06);
+  --c-border-2: rgba(0,0,0,0.1);
+  --c-border-3: rgba(0,0,0,0.15);
+  --c-avatar-start: #d0d0d0;
+  --c-avatar-end:   #c0c0c0;
+  --c-sessions-start: #f0f0f0;
+  --c-sessions-end:   #e4e4e4;
+}
+
+/* ── Light mode: Tailwind utility overrides ─────────────────────────────── */
+/* Text */
+.light-mode .text-white                         { color: #1a1a1a !important; }
+.light-mode .text-white\/70                     { color: rgba(0,0,0,0.65) !important; }
+.light-mode .text-white\/40                     { color: rgba(0,0,0,0.4) !important; }
+.light-mode .text-white\/30                     { color: rgba(0,0,0,0.3) !important; }
+.light-mode .placeholder-white\/40::placeholder { color: rgba(0,0,0,0.35) !important; }
+/* Borders */
+.light-mode .border-white                       { border-color: rgba(0,0,0,0.5) !important; }
+.light-mode .border-white\/10                   { border-color: rgba(0,0,0,0.1) !important; }
+.light-mode .border-white\/20                   { border-color: rgba(0,0,0,0.15) !important; }
+.light-mode .border-white\/30                   { border-color: rgba(0,0,0,0.2) !important; }
+.light-mode .hover\:border-white\/30:hover      { border-color: rgba(0,0,0,0.2) !important; }
+.light-mode .hover\:border-white\/40:hover      { border-color: rgba(0,0,0,0.25) !important; }
+/* Backgrounds */
+.light-mode .bg-white\/5                        { background-color: rgba(0,0,0,0.04) !important; }
+.light-mode .hover\:bg-white\/5:hover           { background-color: rgba(0,0,0,0.04) !important; }
+.light-mode .hover\:bg-white\/10:hover          { background-color: rgba(0,0,0,0.06) !important; }
+.light-mode .bg-black\/70                       { background-color: rgba(0,0,0,0.35) !important; }
+.light-mode .shadow-inner                       { box-shadow: inset 0 2px 4px rgba(0,0,0,0.06) !important; }
+/* Hardcoded dark bg classes */
+.light-mode .bg-\[#060606\]                     { background-color: var(--c-bg-header) !important; }
+.light-mode .bg-\[#0b0b0c\]                     { background-color: var(--c-bg-surface) !important; }
+.light-mode .bg-\[#0f0f10\]                     { background-color: var(--c-bg-editor) !important; }
+.light-mode .bg-\[#101010\]                     { background-color: var(--c-bg-raised) !important; }
+/* EditorToolbar ring */
+.light-mode .ring-white\/70                     { --tw-ring-color: rgba(0,0,0,0.2) !important; }

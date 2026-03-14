@@ -100,8 +100,8 @@ function DayTooltip({ entry, dayLabel, accentHex, cellRef }) {
         left: pos.left,
         zIndex: 10000,
         opacity: pos.ready ? 1 : 0,
-        background: '#1a1b1e',
-        border: `1px solid ${met ? accentHex + '55' : 'rgba(255,255,255,0.12)'}`,
+        background: 'var(--c-bg-modal)',
+        border: `1px solid ${met ? accentHex + '55' : 'var(--c-border-3)'}`,
         borderRadius: '8px',
         padding: '8px 12px',
         pointerEvents: 'none',
@@ -111,13 +111,13 @@ function DayTooltip({ entry, dayLabel, accentHex, cellRef }) {
       }}
     >
       {/* Date label */}
-      <div style={{ fontSize: '11px', color: '#72767d', marginBottom: '5px' }}>{dayLabel}</div>
+      <div style={{ fontSize: '11px', color: 'var(--c-text-5)', marginBottom: '5px' }}>{dayLabel}</div>
 
       {/* Words / goal row */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
         {met
           ? <CheckCircle2 size={12} color={accentHex} style={{ flexShrink: 0, alignSelf: 'center' }} />
-          : <XCircle      size={12} color="#4f545c"   style={{ flexShrink: 0, alignSelf: 'center' }} />
+          : <XCircle      size={12} color="var(--c-text-6)"   style={{ flexShrink: 0, alignSelf: 'center' }} />
         }
 
         {/* Word count — large, colored */}
@@ -132,7 +132,7 @@ function DayTooltip({ entry, dayLabel, accentHex, cellRef }) {
         {goal !== null && (
           <span style={{
             fontSize: '10px', fontWeight: 500,
-            color: '#4f545c',
+            color: 'var(--c-text-6)',
             // sit lower to create a subscript feel
             position: 'relative', top: '2px',
           }}>
@@ -140,7 +140,7 @@ function DayTooltip({ entry, dayLabel, accentHex, cellRef }) {
           </span>
         )}
 
-        <span style={{ fontSize: '11px', color: '#4f545c' }}>words</span>
+        <span style={{ fontSize: '11px', color: 'var(--c-text-6)' }}>words</span>
       </div>
     </div>,
     document.body
@@ -204,7 +204,7 @@ function CalendarCell({ day, cellIndex, daysInMonth, viewYear, viewMonth, log, a
       <span style={{
         fontSize: '12px',
         fontWeight: isToday ? 700 : met ? 600 : 400,
-        color: met ? accentHex : isToday ? '#fff' : hasData ? '#96989d' : '#72767d',
+        color: met ? accentHex : isToday ? 'var(--c-text-1)' : hasData ? 'var(--c-text-4)' : 'var(--c-text-5)',
         position: 'relative', zIndex: 1, lineHeight: 1,
       }}>
         {day}
@@ -317,8 +317,8 @@ function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, 
       style={{
         position: 'fixed', top: pos.top, left: pos.left,
         width: '308px', zIndex: 9999,
-        background: '#111214',
-        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'var(--c-bg-nav)',
+        border: '1px solid var(--c-border-2)',
         borderRadius: '16px',
         boxShadow: `0 16px 48px rgba(0,0,0,0.8), 0 0 40px ${accentHex}18`,
         padding: '20px',
@@ -330,7 +330,7 @@ function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, 
           from { opacity: 0; transform: translateY(-6px); }
           to   { opacity: 1; transform: translateY(0);    }
         }
-        .streak-nav-btn:hover { background: rgba(255,255,255,0.08) !important; color: #fff !important; }
+        .streak-nav-btn:hover { background: var(--c-bg-hover2) !important; color: var(--c-text-1) !important; }
       `}</style>
 
       <button
@@ -338,12 +338,12 @@ function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, 
         style={{
           position: 'absolute', top: '12px', right: '12px',
           width: '24px', height: '24px', borderRadius: '50%',
-          background: 'rgba(255,255,255,0.06)', border: 'none',
+          background: 'var(--c-border-1)', border: 'none',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          cursor: 'pointer', color: '#72767d',
+          cursor: 'pointer', color: 'var(--c-text-5)',
         }}
-        onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.12)'; e.currentTarget.style.color='#fff'; }}
-        onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.06)'; e.currentTarget.style.color='#72767d'; }}
+        onMouseEnter={e => { e.currentTarget.style.background='var(--c-border-3)'; e.currentTarget.style.color='var(--c-text-1)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background='var(--c-border-1)'; e.currentTarget.style.color='var(--c-text-5)'; }}
       >
         <X size={13} />
       </button>
@@ -356,20 +356,20 @@ function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, 
             {currentStreak}
           </span>
         </div>
-        <div style={{ fontSize: '12px', color: '#72767d', marginBottom: '8px' }}>{streakLabel}</div>
+        <div style={{ fontSize: '12px', color: 'var(--c-text-5)', marginBottom: '8px' }}>{streakLabel}</div>
 
         {/* Today's progress */}
-        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '8px', padding: '8px 12px' }}>
+        <div style={{ background: 'var(--c-border-1)', borderRadius: '8px', padding: '8px 12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
-            <span style={{ fontSize: '11px', color: '#72767d', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Today</span>
+            <span style={{ fontSize: '11px', color: 'var(--c-text-5)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Today</span>
             <span style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
               <span style={{ fontSize: '13px', fontWeight: 700, color: todayMet ? accentHex : '#72767d' }}>
                 {wordsToday.toLocaleString()}
               </span>
-              <span style={{ fontSize: '10px', color: '#4f545c', position: 'relative', top: '1px' }}>
+              <span style={{ fontSize: '10px', color: 'var(--c-text-6)', position: 'relative', top: '1px' }}>
                 /{displayGoal.toLocaleString()}
               </span>
-              <span style={{ fontSize: '11px', color: '#4f545c' }}>words</span>
+              <span style={{ fontSize: '11px', color: 'var(--c-text-6)' }}>words</span>
             </span>
           </div>
           <div style={{ height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
@@ -384,13 +384,13 @@ function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, 
 
       {/* Month nav */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <button className="streak-nav-btn" onClick={prevMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#72767d', padding: '4px 6px', borderRadius: '6px', transition: 'all 0.1s' }}>
+        <button className="streak-nav-btn" onClick={prevMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--c-text-5)', padding: '4px 6px', borderRadius: '6px', transition: 'all 0.1s' }}>
           <ChevronLeft size={15} />
         </button>
-        <span style={{ fontSize: '13px', fontWeight: 600, color: '#dcddde' }}>
+        <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--c-text-2)' }}>
           {MONTH_NAMES[viewMonth]} {viewYear}
         </span>
-        <button className="streak-nav-btn" onClick={nextMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#72767d', padding: '4px 6px', borderRadius: '6px', transition: 'all 0.1s' }}>
+        <button className="streak-nav-btn" onClick={nextMonth} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--c-text-5)', padding: '4px 6px', borderRadius: '6px', transition: 'all 0.1s' }}>
           <ChevronRight size={15} />
         </button>
       </div>
@@ -398,7 +398,7 @@ function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, 
       {/* Day headers */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '2px' }}>
         {DAY_LABELS.map(d => (
-          <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 700, color: '#4f545c', padding: '2px 0' }}>{d}</div>
+          <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 700, color: 'var(--c-text-6)', padding: '2px 0' }}>{d}</div>
         ))}
       </div>
 
@@ -419,8 +419,8 @@ function StreakCalendar({ currentStreak, log, wordsToday, goalWords, accentHex, 
         ))}
       </div>
 
-      <div style={{ marginTop: '14px', textAlign: 'center', fontSize: '11px', color: '#4f545c', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-        <Target size={11} color="#4f545c" />
+      <div style={{ marginTop: '14px', textAlign: 'center', fontSize: '11px', color: 'var(--c-text-6)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+        <Target size={11} color="var(--c-text-6)" />
         Current goal: {goalWords.toLocaleString()} words/day
       </div>
     </div>,
@@ -567,7 +567,7 @@ export function FlameButton({ current, accentHex = '#3b82f6', goalWords = 300, o
         {currentStreak > 0 && (
           <div style={{
             position: 'absolute', top: '-7px', right: '-7px',
-            background: accentHex, color: '#fff',
+            background: accentHex, color: 'var(--c-text-1)',
             fontSize: '9px', fontWeight: 800, lineHeight: 1,
             borderRadius: '999px', minWidth: '16px', height: '16px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',

@@ -19,9 +19,10 @@ const BurgerIcon = ({ className }) => (
 );
 
 /* === EDITOR === */
-function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, goalWords, onStreakUpdate }) {
+function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, goalWords, onStreakUpdate, typewriterMode }) {
   const [title, setTitle] = useState(current?.title || "");
   const editorRef = useRef(null);
+  const mainRef   = useRef(null);   // ref for the scrollable <main> container
 
   useEffect(() => {
     setTitle(current?.title || "");
@@ -32,6 +33,50 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, 
       editorRef.current.innerHTML = current.content || "";
     }
   }, [current?.id]);
+
+  // ── Typewriter scroll ────────────────────────────────────────────────────
+  // When enabled, keeps the cursor line vertically centred in the scroll area.
+  // Uses selectionchange (fires on every cursor move / keystroke) but only acts
+  // when the editor actually has focus, so it won't interfere with other inputs.
+  const scrollToCenter = useCallback(() => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+
+    // getClientRects() is more reliable for collapsed cursors than getBoundingClientRect()
+    const range = sel.getRangeAt(0);
+    const rects = range.getClientRects();
+    const rect  = rects.length ? rects[0] : range.getBoundingClientRect();
+
+    // Guard: zero-rect means the cursor position isn't resolved yet
+    if (!rect || (rect.top === 0 && rect.bottom === 0)) return;
+
+    const container = mainRef.current;
+    if (!container) return;
+
+    const cRect     = container.getBoundingClientRect();
+    const cursorMid = rect.top + rect.height / 2;
+    const targetMid = cRect.top + cRect.height / 2;
+    const delta     = cursorMid - targetMid;
+
+    // Skip tiny deltas — avoids jitter while the user's cursor is already centred
+    if (Math.abs(delta) < 4) return;
+
+    container.scrollBy({ top: delta, behavior: "smooth" });
+  }, []);
+
+  useEffect(() => {
+    if (!typewriterMode) return;
+
+    const handler = () => {
+      // Only scroll when the cursor is inside our editor, not anywhere on the page
+      if (!editorRef.current || !editorRef.current.contains(document.getSelection()?.anchorNode)) return;
+      scrollToCenter();
+    };
+
+    document.addEventListener("selectionchange", handler);
+    return () => document.removeEventListener("selectionchange", handler);
+  }, [typewriterMode, scrollToCenter]);
+  // ────────────────────────────────────────────────────────────────────────
 
   const handleInput = (e) => {
     const html = e.currentTarget.innerHTML;
@@ -72,7 +117,7 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, 
         </div>
       </header>
 
-      <main className="relative flex-1 p-6 overflow-auto">
+      <main ref={mainRef} className="relative flex-1 p-6 overflow-auto">
         {current ? (
           <>
             <EditorToolbar
@@ -84,6 +129,7 @@ function Editor({ current, onEditTitle, onEditContent, onToggleMenu, accentHex, 
               contentEditable
               suppressContentEditableWarning
               className="w-full min-h-[400px] bg-[#0f0f10] text-white p-4 rounded-lg shadow-inner focus:outline-none overflow-auto mt-20 leading-relaxed"
+              style={typewriterMode ? { paddingBottom: "50vh" } : {}}
               onInput={handleInput}
             />
           </>
@@ -194,6 +240,11 @@ export default function App() {
     JSON.parse(localStorage.getItem('writerSettings')) || DEFAULT_SETTINGS
   );
 
+  // Toggle .light-mode class on <html> whenever the setting changes
+  useEffect(() => {
+    document.documentElement.classList.toggle('light-mode', settings.lightMode ?? false);
+  }, [settings.lightMode]);
+
   // Persist on change:
   const handleSaveSettings = (patch) => {
     setSettings(patch);
@@ -286,6 +337,7 @@ export default function App() {
         blobSizeRange={{ min: customization.gradient.blobSizeMin, max: customization.gradient.blobSizeMax }}
         blobSpeedMultiplier={customization.gradient.speedMultiplier}
         visible={settings.enableGradient}
+        baseColor={settings.lightMode ? '#f5f5f5' : '#0a0a0a'}
       />
       <Sidebar
         sessions={filtered}
@@ -317,6 +369,7 @@ export default function App() {
           accentHex={customization.accentHex}
           goalWords={settings.dailyWordGoal ?? 300}
           onStreakUpdate={handleStreakUpdate}
+          typewriterMode={settings.typewriterMode ?? false}
         />
       )}
       <BurgerMenu

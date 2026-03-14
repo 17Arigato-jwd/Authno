@@ -337,7 +337,7 @@ export default function Sidebar({
         <div
           className="rounded-lg p-2"
           style={{
-            background: "linear-gradient(135deg, #1f1f1f 0%, #050505 100%)",
+            background: "linear-gradient(135deg, var(--c-sessions-start) 0%, var(--c-sessions-end) 100%)",
             border: "1px solid rgba(255,255,255,0.04)",
           }}
         >
