@@ -8,7 +8,7 @@ import Sidebar from "./components/Sidebar";
 import EditLayout from "./components/EditLayoutSidebar";
 import { Settings, DEFAULT_SETTINGS } from './components/Settings';
 import { CustomizationSlider, DEFAULT_CUSTOMIZATION } from './components/CustomizationSlider';
-import { FlameButton } from './components/Streak';
+import { FlameButton, countWords } from './components/Streak';
 
 
 /* === ICONS === */
@@ -398,6 +398,19 @@ export default function App() {
         customization={customization}
         onSave={handleSaveCustomization}
       />
+      {/* Word & character counter */}
+      {current && (() => {
+        const words = countWords(current.content ?? '');
+        const chars = (current.content ?? '').replace(/<[^>]*>/g, '').replace(/&[a-z]+;/gi, ' ').length;
+        return (
+          <div className="fixed bottom-4 left-4 flex items-center gap-2 text-white/40 text-sm select-none pointer-events-none"
+               style={{ zIndex: 50 }}>
+            <span>{words.toLocaleString()} {words === 1 ? 'word' : 'words'}</span>
+            <span className="opacity-30">·</span>
+            <span>{chars.toLocaleString()} {chars === 1 ? 'char' : 'chars'}</span>
+          </div>
+        );
+      })()}
       {/* Autosave indicator */}
       <div className="fixed bottom-4 right-4 flex items-center gap-3 text-white/40 text-sm select-none">
         {lastSaved && (
